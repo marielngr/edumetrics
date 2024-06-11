@@ -10,7 +10,7 @@ export default function UvpS1() {
         <div className={styles.sidebarLeft__content}>hallo</div>
       </section>
       <section className={styles.tablesheet}>
-        <h2 className={styles.tablesheet__h2}>Überschrift what ever</h2>
+        <h2 className={styles.tablesheet__h2}>Überschrift whatever</h2>
         <div className={styles.tablesheet__Wrapper}>
           <div className={styles.tableContent}>hallo </div>
           <div className={styles.tableContent}>hallo</div>
