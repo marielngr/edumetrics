@@ -17,7 +17,7 @@ const lehrerListe: Lehrer[] = [
     id: "lehrer3",
     kuerzel: "EF",
     pflichtstundenanzahl: 20,
-    faecherIds: ["englisch", "deustch"],
+    faecherIds: ["englisch", "deutsch"],
   },
 ];
 
