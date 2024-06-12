@@ -1,6 +1,6 @@
 import styles from "./page.module.scss";
-import { klassen } from "@/initial_data";
-import { Klasse } from "@/model";
+import { klassen, faecher, lehrerListe } from "@/initial_data";
+import { Klasse, Fach, Lehrer } from "@/model";
 
 type TableHeaderProps = {
   klassen: Klasse[];
@@ -25,6 +25,30 @@ function TableHeader({ klassen }: TableHeaderProps) {
   );
 }
 
+type TableRowProps = {
+  faecher: Fach[];
+  lehrer: Lehrer[];
+};
+
+function TableRow({ faecher, lehrer }: TableRowProps) {
+  //To do:
+  //map über faecher und returne für jedes Fach eine Reihe mit folgendem Aufbau:
+  //Containerdiv mit Klasse tableContentRow
+  //Innerhalb des Containers: ein div mit Namen des Faches, für jede Klassenspalte
+  //
+
+  const fachliste = faecher.map((fach) => {
+    return (
+      <div key={fach.id} className={styles.tableContentRow}>
+        <div className={styles.tableContentRow__item_first}>{fach.name}</div>
+        <div className={styles.tableContentRow__item}>Lehrername</div>
+      </div>
+    );
+  });
+
+  return <div className={styles.tableContentRow__Container}>{fachliste}</div>;
+}
+
 export default function VerteilungsplanS1() {
   console.log("klassen:", klassen);
 
@@ -38,13 +62,7 @@ export default function VerteilungsplanS1() {
         <h2 className={styles.tablesheet__h2}>Überschrift whatever</h2>
         <div className={styles.tablesheet__Wrapper}>
           <TableHeader klassen={klassen} />
-          <div className={styles.tableContentRow}>
-            <div className={styles.tableContentRow__item}>hallo</div>
-            <div className={styles.tableContentRow__item}>hallo</div>
-          </div>
-          <div className={styles.tableContentRow}>
-            <div className={styles.tableContentRow__item}>hallo</div>
-          </div>
+          <TableRow faecher={faecher} lehrer={lehrerListe} />
         </div>
       </section>
     </div>

@@ -94,7 +94,24 @@
   gap: 0.5rem;
   border: 2px solid green;
 
+  &__Container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    border: 2px solid blue;
+  }
+
   &__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: darkmagenta;
+    background-color: rgb(197, 161, 195);
+    width: 5rem;
+    height: 2rem;
+  }
+
+  &__item_first {
     display: flex;
     align-items: center;
     justify-content: center;
