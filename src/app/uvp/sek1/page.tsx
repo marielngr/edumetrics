@@ -7,16 +7,22 @@ type TableHeaderProps = {
 };
 
 function TableHeader({ klassen }: TableHeaderProps) {
-  //für jede Klasse ein div (Spalte) erstellen und darin den Namen anzeigen
-  const liste = klassen.map((klasse) => {
+  const klassenliste = klassen.map((klasse) => {
     return (
-      <div key={klasse.id} className={styles.tableContent}>
+      <div key={klasse.id} className={styles.tableHeader__item}>
         {klasse.name}
       </div>
     );
   });
 
-  return <h3 className={styles.tableContent}>{liste}</h3>;
+  return (
+    <div className={styles.tableHeader}>
+      <div className={styles.tableHeader__item_first}>
+        <p>Klassen / Fächer</p>
+      </div>
+      {klassenliste}
+    </div>
+  );
 }
 
 export default function VerteilungsplanS1() {
@@ -32,8 +38,13 @@ export default function VerteilungsplanS1() {
         <h2 className={styles.tablesheet__h2}>Überschrift whatever</h2>
         <div className={styles.tablesheet__Wrapper}>
           <TableHeader klassen={klassen} />
-          <div className={styles.tableContent}>hallo </div>
-          <div className={styles.tableContent}>hallo</div>
+          <div className={styles.tableContentRow}>
+            <div className={styles.tableContentRow__item}>hallo</div>
+            <div className={styles.tableContentRow__item}>hallo</div>
+          </div>
+          <div className={styles.tableContentRow}>
+            <div className={styles.tableContentRow__item}>hallo</div>
+          </div>
         </div>
       </section>
     </div>
