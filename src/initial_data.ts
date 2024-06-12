@@ -1,4 +1,5 @@
 import { Lehrer, Zeitabschnitt, Fach, Vorgabe, Klasse } from "./model";
+export { lehrerListe, klassen, faecher, zeitabschnitte, vorgaben };
 
 const lehrerListe: Lehrer[] = [
   {
