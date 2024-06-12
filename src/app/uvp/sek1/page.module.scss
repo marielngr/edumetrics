@@ -39,12 +39,12 @@
   align-items: center;
   background-color: aqua;
 
-  &__h2 {
+  &__headline {
     color: rgb(255, 183, 0);
     text-align: center;
   }
 
-  &__Wrapper {
+  &__wrapper {
     display: flex;
     flex-direction: row;
     align-self: flex-start;
