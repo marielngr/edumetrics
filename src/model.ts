@@ -1,5 +1,8 @@
 export type FachId = string;
 export type LehrerId = string;
+export type KlasseId = string;
+export type ZeitabschnittId = string;
+export type VorgabeId = string;
 
 export interface Fach {
   name: string;
@@ -13,8 +16,6 @@ export interface Lehrer {
   faecherIds: FachId[];
 }
 
-export type KlasseId = string;
-
 export interface Klasse {
   id: KlasseId;
   name: string;
@@ -22,16 +23,12 @@ export interface Klasse {
   lehrerId: LehrerId;
 }
 
-export type ZeitabschnittId = string;
-
 export interface Zeitabschnitt {
   id: ZeitabschnittId;
   schuljahr: number;
   halbjahr: string;
   version: number;
 }
-
-export type VorgabeId = string;
 
 export interface Vorgabe {
   id: VorgabeId;
