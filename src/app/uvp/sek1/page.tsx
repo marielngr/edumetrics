@@ -1,6 +1,6 @@
 import styles from "./page.module.scss";
 import { klassen, faecher, lehrerListe } from "@/initial_data";
-import { Klasse, Fach, Lehrer } from "@/model";
+import { Klasse, Fach, FachId, Lehrer } from "@/model";
 
 type TableHeaderProps = {
   klassen: Klasse[];
@@ -32,10 +32,13 @@ type TableRowProps = {
 
 function TableRow({ faecher, lehrer }: TableRowProps) {
   //To do:
-  //map über faecher und returne für jedes Fach eine Reihe mit folgendem Aufbau:
+  //map über faecher und return für jedes Fach eine Reihe mit folgendem Aufbau:
   //Containerdiv mit Klasse tableContentRow
-  //Innerhalb des Containers: ein div mit Namen des Faches, für jede Klassenspalte
-  //
+  //Innerhalb des Containers:
+  //- ein div mit Namen des Faches,
+  //für jede weitere Klassenspalte den Lehrernamen
+
+  // function findeFachlehrer (fachId: string) => {
 
   const fachliste = faecher.map((fach) => {
     return (
