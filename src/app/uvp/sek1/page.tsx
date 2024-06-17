@@ -10,7 +10,7 @@ function TableHeader({ klassen }: TableHeaderProps) {
   const klassenliste = klassen.map((klasse) => {
     return (
       <div key={klasse.id} className={styles.tableHeader__item}>
-        {klasse.name}
+        {klasse.id}
       </div>
     );
   });
