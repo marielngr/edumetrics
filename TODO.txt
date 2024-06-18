@@ -1,10 +1,14 @@
 - Organisationsform arraz fuer alle Klasen 5-10 von Hand in initial Data anlegen, erstes Schuljahr einfach das erste schuljahr von Jan nehmen, fertig
 - Excel Datei nach CSV exportieren (Sepichern unter: CSV)
 - CSV mit in public legen, aber nicht committen, sondern mit ins .gitignore tun, weil datei nicht anonzmisiert ist, z.B. Datei public/daten.txt
+
+
 - eine Funktion schreiben loadData o.ae., die einfach fetch('/daten.txt') aufruft. Copilot chat hat gesagt, wenn die in public/ liegt, kann man diese datei so aufrufen , kann man direkt im Browser testen
 - dann hast du die Textdatei quasi als strint vorlegen als ergebnis vom fetch
 - diese TExtdatei kannst du mit map und split zerteilen, so wie in test.ts
 - das ERgebnis ist ein Arraz von Arraz
+
+
 - das Array wuerde ich erst einmal durchgehen um zu gucken, welche Schuljahr gibt es ueberhaupt. Jan hat immer das Format z.B. 2019_20 geweaehlt, das wuerde ich auch wieder splitten nach _ dann hat
   man unser startjahr fuer unser Interface Schuljahr, als name und id kann man jetzt im Augenblick einfach die ganze Bezeichnung nehmen; am besten macht man eine Funktion, die eine Zeile aus der Datei bekommt
   und das Schuljahr als object zurueckgibt, weil wir die informatinen zum Schuljahr haeufiger benoetigen werden, z.B. im naechsten SChrit
