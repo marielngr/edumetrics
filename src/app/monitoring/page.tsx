@@ -1,4 +1,4 @@
-import { Klasse, Schuljahr } from "@/model";
+import { Klasse, Lehrer, Schuljahr, Fach } from "@/model";
 
 async function ladeCsvDaten(filePath: string): Promise<string[][]> {
   try {
@@ -14,15 +14,18 @@ async function ladeCsvDaten(filePath: string): Promise<string[][]> {
 }
 
 export default async function Monitoring() {
-  const csv = await ladeCsvDaten("http://localhost:3000/daten.csv");
-  // // erste Zeile enthält die Spaltenüberschriften, weg damit
+  console.log("neuer Import");
+  let csv = await ladeCsvDaten("http://localhost:3000/daten.csv");
+  //erste Zeile enthält die Spaltenüberschriften, weg damit
   csv.shift();
+  //in csv alle Vorkommen von _ durch - ersetzen
+  csv = csv.map((zeile) => zeile.map((feld) => feld.replace(/_/g, "-")));
 
   // Schuljahre auslesen und nur Werte ohne Leerzeichen oder undefined filtern
-  const schuljahre = csv.map((zeile) => zeile[1]).filter((sj) => sj);
+  let schuljahreIDs = csv.map((zeile) => zeile[1]).filter((sj) => sj);
   //duplicate rausfiltern
-  const uniqueSchuljahre = Array.from(new Set(schuljahre));
-  const Schuljahre: Schuljahr[] = uniqueSchuljahre.map((sj) => {
+  schuljahreIDs = Array.from(new Set(schuljahreIDs));
+  const schuljahre: Schuljahr[] = schuljahreIDs.map((sj) => {
     const startjahr = sj.slice(0, 4);
     return {
       id: sj,
@@ -39,13 +42,29 @@ export default async function Monitoring() {
       if (!id) {
         return null;
       }
-      const kuerzel = zeile[2];
+      //splitte Strings der Form 10abc in 10 und abc
+      const match = zeile[2].match(/^(\d+)(.*)$/);
+      let kuerzel: string;
+      if (match) {
+        kuerzel = match[2].trim();
+      } else {
+        console.log("Kein Match:", zeile[2]);
+        kuerzel = "";
+      }
       if (!kuerzel) {
+        console.log("Kein Kürzel:", index, zeile);
         return null;
       }
 
-      const eingangsschuljahr = zeile[0].slice(0, 4);
+      const eingangsschuljahr = zeile[0].slice(0, 7);
       if (!eingangsschuljahr) {
+        console.log("Kein Schuljahr:", index, zeile);
+        return null;
+      }
+      //prüfen, ob dieses Schuljahr schon in der Liste ist
+      const schuljahr = schuljahre.find((sj) => sj.id === eingangsschuljahr);
+      if (!schuljahr) {
+        console.log("Schuljahr nicht gefunden:", index, eingangsschuljahr);
         return null;
       }
       const klasse: Klasse = {
@@ -78,9 +97,60 @@ export default async function Monitoring() {
     });
     return ergebnis;
   }
-
   const klassenOhneDuplikate = entferneDuplikate(klassen);
-  console.log(klassenOhneDuplikate);
+  // console.log(klassenOhneDuplikate);
+
+  //Fächer auslesen und Nullwerte filtern
+  const faecher: Fach[] = csv
+    .map((zeile) => {
+      const id = zeile[3];
+      if (!id) {
+        return null;
+      }
+      const fach: Fach = {
+        id: id,
+        name: zeile[3],
+      };
+      return fach;
+    })
+    .filter((fach) => fach !== null) as Fach[];
+  //Duplikate entfernen
+  function sindGleicheFaecher(fach1: Fach, fach2: Fach): boolean {
+    return fach1.id === fach2.id;
+  }
+  function bereinigung(faecher: Fach[]): Fach[] {
+    const ergebnis: Fach[] = [];
+    faecher.forEach((fach) => {
+      const istDuplikat = ergebnis.some((ufach) =>
+        sindGleicheFaecher(fach, ufach)
+      );
+      if (!istDuplikat) {
+        ergebnis.push(fach);
+      }
+    });
+    return ergebnis;
+  }
+  const faecherOhneDuplikate = bereinigung(faecher);
+  console.log("hallo", faecherOhneDuplikate);
+
+  //Lehrer auslesen
+  // let lehrer: Lehrer[] = csv
+  //   .map((zeile, index) => {
+  //     lehrer = zeile[4];
+  //     if (!lehrer) {
+  //       return null;
+  //     }
+
+  //     let ergebnis: Lehrer []= {
+  //       id: LehrerDetails,
+  //       kuerzel: lehrer,
+  //       faecherIds: [],
+  //   })
+  //   .filter((l) => l !== null) as Lehrer[];
+
+  //Benotungen auslesen
+
+  //als Komponente refactoren
 
   return <div>Monitoring</div>;
 }
