@@ -6,7 +6,6 @@ async function ladeCsvDaten(filePath: string): Promise<string[][]> {
     const fileContent = await response.text();
     const lines = fileContent.split("\n");
     const result = lines.map((line) => line.split(";"));
-    // console.log("CSV-Daten:", result);
     return result;
   } catch (error) {
     console.error("Fehler beim Einlesen der CSV-Datei:", error);
@@ -31,8 +30,6 @@ export default async function Monitoring() {
       startjahr: +startjahr,
     };
   });
-  //console.log("unique Schuljahre:", uniqueSchuljahre),
-  // console.log("Array of Schuljahre:", Schuljahre);
 
   //Klassen auslesen
 
@@ -47,15 +44,43 @@ export default async function Monitoring() {
         return null;
       }
 
-      console.log("Klasse:", id, kuerzel);
-
-      // eingangsSchuljahr pro klasse
-      // eingangsJahrgangsstufe pro klasse
-      //console.log("Kl:", id);
-      const klasse: Klasse = { id: id };
+      const eingangsschuljahr = zeile[0].slice(0, 4);
+      if (!eingangsschuljahr) {
+        return null;
+      }
+      const klasse: Klasse = {
+        id: id,
+        kuerzel: kuerzel,
+        eingangsSchuljahr: eingangsschuljahr,
+        eingangsJahrgangsstufe: 5,
+      };
       return klasse;
     })
+
     .filter((klasse) => klasse !== null) as Klasse[];
+
+  //Doppelte Objekte rausfiltern:
+  // Funktion, um zu überprüfen, ob zwei Klassen gleich sind
+  function sindGleicheKlassen(klasse1: Klasse, klasse2: Klasse): boolean {
+    return klasse1.id === klasse2.id;
+  }
+
+  // Funktion, um Duplikate aus einem Array von Klassen zu entfernen
+  function entferneDuplikate(klassen: Klasse[]): Klasse[] {
+    const ergebnis: Klasse[] = [];
+    klassen.forEach((klasse) => {
+      const istDuplikat = ergebnis.some((uklasse) =>
+        sindGleicheKlassen(klasse, uklasse)
+      );
+      if (!istDuplikat) {
+        ergebnis.push(klasse);
+      }
+    });
+    return ergebnis;
+  }
+
+  const klassenOhneDuplikate = entferneDuplikate(klassen);
+  console.log(klassenOhneDuplikate);
 
   return <div>Monitoring</div>;
 }

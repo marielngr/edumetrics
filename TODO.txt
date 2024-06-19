@@ -1,19 +1,22 @@
 - Organisationsform arraz fuer alle Klasen 5-10 von Hand in initial Data anlegen, erstes Schuljahr einfach das erste schuljahr von Jan nehmen, fertig
 - Excel Datei nach CSV exportieren (Sepichern unter: CSV)
 - CSV mit in public legen, aber nicht committen, sondern mit ins .gitignore tun, weil datei nicht anonzmisiert ist, z.B. Datei public/daten.txt
-
-
 - eine Funktion schreiben loadData o.ae., die einfach fetch('/daten.txt') aufruft. Copilot chat hat gesagt, wenn die in public/ liegt, kann man diese datei so aufrufen , kann man direkt im Browser testen
 - dann hast du die Textdatei quasi als strint vorlegen als ergebnis vom fetch
 - diese TExtdatei kannst du mit map und split zerteilen, so wie in test.ts
 - das ERgebnis ist ein Arraz von Arraz
 
-
 - das Array wuerde ich erst einmal durchgehen um zu gucken, welche Schuljahr gibt es ueberhaupt. Jan hat immer das Format z.B. 2019_20 geweaehlt, das wuerde ich auch wieder splitten nach _ dann hat
   man unser startjahr fuer unser Interface Schuljahr, als name und id kann man jetzt im Augenblick einfach die ganze Bezeichnung nehmen; am besten macht man eine Funktion, die eine Zeile aus der Datei bekommt
   und das Schuljahr als object zurueckgibt, weil wir die informatinen zum Schuljahr haeufiger benoetigen werden, z.B. im naechsten SChrit
+
+
+
 - danach wuerde ich die DAtei weider durchgehen und gucken, welche Klassen es gibt.  Hier kann man anhand der Klassenid auch rausfinden, welches Ingangsschuldjahr und welches Kuerzel es sind.
   daran kann man unsere Informationen zur Klasse ableiten.  dazu man aber natuerlich wissen, in welchem Schuljahr die Klasse eingeschult wurde...
+
+
+  
 - wenn man die Klassen und Schuljahr hat, kann man die Benotungen dann importieren, weil diese sich ja aus den Zeilen ergeben.  Die Lehrer wuerde ich jeweils on the flz aus dem kuerzel anlegen, falls
   sie in dem arraz noch nicht da waren.
 - Array als text ausgeben und gucken, ob die Daten korrekt eingelesen wurden
