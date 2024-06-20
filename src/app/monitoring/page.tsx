@@ -114,6 +114,7 @@ export default async function Monitoring() {
       return fach;
     })
     .filter((fach) => fach !== null) as Fach[];
+
   //Duplikate entfernen
   function sindGleicheFaecher(fach1: Fach, fach2: Fach): boolean {
     return fach1.id === fach2.id;
@@ -154,11 +155,34 @@ export default async function Monitoring() {
       })
       .filter((l) => l !== null) as Lehrer[];
 
-    return zeilenLehrer;
+    let arrayVonLehrern: Lehrer[] = zeilenLehrer;
+    console.log("arrayVonLehrern", arrayVonLehrern);
+
+    //prüfen, ob Lehrer schon in der Liste ist u Duplikate entfernen
+    function sindGleicheLehrer(l1: Lehrer, l2: Lehrer): boolean {
+      return l1.id === l2.id;
+    }
+
+    function entferneDuplikateLehrer(lehrer: Lehrer[]): Lehrer[] {
+      const ergebnis: Lehrer[] = [];
+      lehrer.forEach((lehrer) => {
+        const istDuplikat = ergebnis.some((ulehrer) =>
+          sindGleicheLehrer(lehrer, ulehrer)
+        );
+        if (!istDuplikat) {
+          ergebnis.push(lehrer);
+        }
+      });
+      return ergebnis;
+    }
+
+    const lehrerOhneDuplikate = entferneDuplikateLehrer(zeilenLehrer);
+
+    return lehrerOhneDuplikate;
   });
 
   const lehrer: Lehrer[] = arrayVonArrayVonLehrern.flat();
-  console.log("hallo:", arrayVonArrayVonLehrern.flat());
+  // console.log("hallo:", arrayVonArrayVonLehrern.flat());
 
   //       Fächer des Lehrers auslesen
   let faecherIds: string[] = []; //Array für die IDs der Fächer
