@@ -131,22 +131,42 @@ export default async function Monitoring() {
     return ergebnis;
   }
   const faecherOhneDuplikate = bereinigung(faecher);
-  console.log("hallo", faecherOhneDuplikate);
+  // console.log("hallo", faecherOhneDuplikate);
 
   //Lehrer auslesen
-  // let lehrer: Lehrer[] = csv
-  //   .map((zeile, index) => {
-  //     lehrer = zeile[4];
-  //     if (!lehrer) {
-  //       return null;
-  //     }
+  let arrayVonArrayVonLehrern: Lehrer[][] = csv.map((zeile) => {
+    let lehrerIds = zeile[4];
+    if (!lehrerIds) {
+      return [];
+    }
 
-  //     let ergebnis: Lehrer []= {
-  //       id: LehrerDetails,
-  //       kuerzel: lehrer,
-  //       faecherIds: [],
-  //   })
-  //   .filter((l) => l !== null) as Lehrer[];
+    // Aufteilen der Lehrer-IDs, falls durch "/" getrennt
+    let ids = lehrerIds.split("/");
+
+    let zeilenLehrer: Lehrer[] = ids
+      .map((lehrerId) => {
+        let ergebnis: Lehrer = {
+          id: lehrerId,
+          kuerzel: lehrerId,
+          faecherIds: [],
+        };
+        return ergebnis;
+      })
+      .filter((l) => l !== null) as Lehrer[];
+
+    return zeilenLehrer;
+  });
+
+  const lehrer: Lehrer[] = arrayVonArrayVonLehrern.flat();
+  console.log("hallo:", arrayVonArrayVonLehrern.flat());
+
+  //       Fächer des Lehrers auslesen
+  let faecherIds: string[] = []; //Array für die IDs der Fächer
+  // for (let i = 5; i < zeile.length; i++) {
+  //   if (zeile[i] && zeile[i] !== "") {
+  //     faecherIds.push(zeile[i]);
+  //   }
+  // }
 
   //Benotungen auslesen
 
