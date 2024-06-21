@@ -134,17 +134,17 @@ export default async function Monitoring() {
   const faecherOhneDuplikate = bereinigung(faecher);
   // console.log("hallo", faecherOhneDuplikate);
 
-  //Lehrer auslesen
-  let arrayVonArrayVonLehrern: Lehrer[][] = csv.map((zeile) => {
+  //Lehrer auslesen als Array von Objekten
+  let lehrer: Lehrer[] = csv.flatMap((zeile, index) => {
     let lehrerIds = zeile[4];
     if (!lehrerIds) {
+      // console.log( "Keine Lehrer-IDs in Zeile:", index, zeile);
       return [];
     }
 
-    // Aufteilen der Lehrer-IDs, falls durch "/" getrennt
-    let ids = lehrerIds.split("/");
-
-    let zeilenLehrer: Lehrer[] = ids
+    // Aufteilen der Lehrer-IDs, falls durch "/" getrennt und direkt ein flaches Array von Lehrer-Objekten erstellen
+    let zeilenLehrer: Lehrer[] = lehrerIds
+      .split("/")
       .map((lehrerId) => {
         let ergebnis: Lehrer = {
           id: lehrerId,
@@ -155,42 +155,30 @@ export default async function Monitoring() {
       })
       .filter((l) => l !== null) as Lehrer[];
 
-    let arrayVonLehrern: Lehrer[] = zeilenLehrer;
-    console.log("arrayVonLehrern", arrayVonLehrern);
-
-    //prüfen, ob Lehrer schon in der Liste ist u Duplikate entfernen
-    function sindGleicheLehrer(l1: Lehrer, l2: Lehrer): boolean {
-      return l1.id === l2.id;
-    }
-
-    function entferneDuplikateLehrer(lehrer: Lehrer[]): Lehrer[] {
-      const ergebnis: Lehrer[] = [];
-      lehrer.forEach((lehrer) => {
-        const istDuplikat = ergebnis.some((ulehrer) =>
-          sindGleicheLehrer(lehrer, ulehrer)
-        );
-        if (!istDuplikat) {
-          ergebnis.push(lehrer);
-        }
-      });
-      return ergebnis;
-    }
-
-    const lehrerOhneDuplikate = entferneDuplikateLehrer(zeilenLehrer);
-
-    return lehrerOhneDuplikate;
+    return zeilenLehrer;
   });
 
-  const lehrer: Lehrer[] = arrayVonArrayVonLehrern.flat();
-  // console.log("hallo:", arrayVonArrayVonLehrern.flat());
+  //prüfen, ob Lehrer schon in der Liste ist u Duplikate entfernen
+  function sindGleicheLehrer(l1: Lehrer, l2: Lehrer): boolean {
+    return l1.id === l2.id;
+  }
 
-  //       Fächer des Lehrers auslesen
-  let faecherIds: string[] = []; //Array für die IDs der Fächer
-  // for (let i = 5; i < zeile.length; i++) {
-  //   if (zeile[i] && zeile[i] !== "") {
-  //     faecherIds.push(zeile[i]);
-  //   }
-  // }
+  function entferneDuplikateLehrer(lehrer: Lehrer[]): Lehrer[] {
+    const ergebnis: Lehrer[] = [];
+    lehrer.forEach((l) => {
+      const istDuplikat = ergebnis.some((ulehrer) =>
+        sindGleicheLehrer(l, ulehrer)
+      );
+      if (!istDuplikat) {
+        ergebnis.push(l);
+      }
+    });
+    return ergebnis;
+  }
+
+  lehrer = entferneDuplikateLehrer(lehrer);
+
+  console.log("Lehrer", lehrer);
 
   //Benotungen auslesen
 
