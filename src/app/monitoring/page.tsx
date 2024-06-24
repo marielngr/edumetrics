@@ -1,4 +1,4 @@
-import { Klasse, Lehrer, Schuljahr, Fach } from "@/model";
+import { Klasse, Lehrer, Schuljahr, Fach, Benotung } from "@/model";
 
 async function ladeCsvDaten(filePath: string): Promise<string[][]> {
   try {
@@ -136,15 +136,12 @@ export default async function Monitoring() {
 
   //Lehrer auslesen als Array von Objekten
   let lehrer: Lehrer[] = csv.flatMap((zeile, index) => {
-    let lehrerIds = zeile[4];
-    if (!lehrerIds) {
-      // console.log( "Keine Lehrer-IDs in Zeile:", index, zeile);
-      return [];
-    }
+    let lehrerIds = `${zeile[4]}/${zeile[9]}`;
 
     // Aufteilen der Lehrer-IDs, falls durch "/" getrennt und direkt ein flaches Array von Lehrer-Objekten erstellen
     let zeilenLehrer: Lehrer[] = lehrerIds
       .split("/")
+      .filter((l) => l)
       .map((lehrerId) => {
         let ergebnis: Lehrer = {
           id: lehrerId,
@@ -178,9 +175,36 @@ export default async function Monitoring() {
 
   lehrer = entferneDuplikateLehrer(lehrer);
 
-  console.log("Lehrer", lehrer);
+  // console.log("Lehrer", lehrer);
 
   //Benotungen auslesen
+
+  function generiereZufaelligeId() {
+    return Math.random().toString(36).substring(2, 9);
+  }
+
+  const benotung: Benotung[] = csv
+    .map((zeile, index) => {
+      if (!zeile[5]) {
+        return null;
+      }
+      let note = parseFloat(zeile[5].replace(",", "."));
+      // müssen hier nicht Objekte für jede KA und HJ erstellt werden?;
+      let lehrerIds = zeile[4].split("/");
+      return {
+        id: generiereZufaelligeId(),
+        schuljahrId: zeile[1],
+        klasseId: zeile[0],
+        lehrerId: lehrerIds[lehrerIds.length - 1],
+        periodenNummer: 1,
+        laufendeNummer: 1,
+        note: note,
+        fachId: zeile[3],
+      };
+    })
+    .filter((n) => n !== null) as Benotung[];
+
+  console.log("Benotung", benotung);
 
   //als Komponente refactoren
 
