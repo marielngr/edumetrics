@@ -1,3 +1,4 @@
+import { noten } from "@/initial_data";
 import { Klasse, Lehrer, Schuljahr, Fach, Benotung } from "@/model";
 
 async function ladeCsvDaten(filePath: string): Promise<string[][]> {
@@ -184,23 +185,42 @@ export default async function Monitoring() {
   }
 
   const benotung: Benotung[] = csv
-    .map((zeile, index) => {
-      if (!zeile[5]) {
-        return null;
+    .flatMap((zeile) => {
+      function generiereNote(
+        periodennummer: number,
+        laufendeNummer: number,
+        lehrerspalte: number,
+        notenspalte: number
+      ): Benotung | null {
+        if (!zeile[lehrerspalte]) {
+          return null;
+        }
+        let lehrerIds = zeile[lehrerspalte].split("/");
+        if (!zeile[notenspalte]) {
+          return null;
+        }
+        let note = parseFloat(zeile[notenspalte].replace(",", "."));
+
+        return {
+          id: generiereZufaelligeId(),
+          schuljahrId: zeile[1],
+          klasseId: zeile[0],
+          lehrerId: lehrerIds[lehrerIds.length - 1],
+          periodenNummer: periodennummer,
+          laufendeNummer: laufendeNummer,
+          note: note,
+          fachId: zeile[3],
+        };
       }
-      let note = parseFloat(zeile[5].replace(",", "."));
-      // müssen hier nicht Objekte für jede KA und HJ erstellt werden?;
-      let lehrerIds = zeile[4].split("/");
-      return {
-        id: generiereZufaelligeId(),
-        schuljahrId: zeile[1],
-        klasseId: zeile[0],
-        lehrerId: lehrerIds[lehrerIds.length - 1],
-        periodenNummer: 1,
-        laufendeNummer: 1,
-        note: note,
-        fachId: zeile[3],
-      };
+
+      return [
+        generiereNote(1, 1, 4, 5),
+        generiereNote(1, 2, 4, 6),
+        generiereNote(1, 3, 4, 7),
+        generiereNote(2, 1, 9, 10),
+        generiereNote(2, 2, 9, 11),
+        generiereNote(2, 3, 9, 12),
+      ];
     })
     .filter((n) => n !== null) as Benotung[];
 
