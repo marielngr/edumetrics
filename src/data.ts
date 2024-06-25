@@ -49,7 +49,7 @@ export async function ladeDaten(): Promise<Data> {
   // Schuljahre auslesen und nur Werte ohne Leerzeichen oder undefined filtern
 
   let schuljahreIDs = csv.map((zeile) => zeile[1]).filter((sj) => sj);
-  //duplicate rausfiltern
+  //duplicate rausfiltern (strings)
   schuljahreIDs = Array.from(new Set(schuljahreIDs));
   const schuljahre: Schuljahr[] = schuljahreIDs.map((sj) => {
     const startjahr = sj.slice(0, 4);
