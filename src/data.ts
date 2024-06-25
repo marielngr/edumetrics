@@ -21,6 +21,24 @@ export interface Data {
   benotung: Benotung[];
 }
 
+type VergleichFunktion<T> = (element1: T, element2: T) => boolean;
+
+function entferneDuplikate<T>(
+  elemente: T[],
+  vergleich: VergleichFunktion<T>
+): T[] {
+  const ergebnis: T[] = [];
+  elemente.forEach((element) => {
+    const istDuplikat = ergebnis.some((uElement) =>
+      vergleich(element, uElement)
+    );
+    if (!istDuplikat) {
+      ergebnis.push(element);
+    }
+  });
+  return ergebnis;
+}
+
 export async function ladeDaten(): Promise<Data> {
   let csv = await ladeCsvDaten("http://localhost:3000/daten.csv");
   //erste Zeile enthält die Spaltenüberschriften, weg damit
@@ -85,27 +103,10 @@ export async function ladeDaten(): Promise<Data> {
 
     .filter((klasse) => klasse !== null) as Klasse[];
 
-  //Doppelte Objekte rausfiltern:
-  // Funktion, um zu überprüfen, ob zwei Klassen gleich sind
-  function sindGleicheKlassen(klasse1: Klasse, klasse2: Klasse): boolean {
-    return klasse1.id === klasse2.id;
-  }
-
-  // Funktion, um Duplikate aus einem Array von Klassen zu entfernen
-  function entferneDuplikate(klassen: Klasse[]): Klasse[] {
-    const ergebnis: Klasse[] = [];
-    klassen.forEach((klasse) => {
-      const istDuplikat = ergebnis.some((uklasse) =>
-        sindGleicheKlassen(klasse, uklasse)
-      );
-      if (!istDuplikat) {
-        ergebnis.push(klasse);
-      }
-    });
-    return ergebnis;
-  }
-  const klassenOhneDuplikate = entferneDuplikate(klassen);
-  // console.log(klassenOhneDuplikate);
+  const klassenOhneDuplikate = entferneDuplikate(
+    klassen,
+    (k1, k2) => k1.id === k2.id
+  );
 
   //Fächer auslesen und Nullwerte filtern
   const faecher: Fach[] = csv
@@ -126,20 +127,8 @@ export async function ladeDaten(): Promise<Data> {
   function sindGleicheFaecher(fach1: Fach, fach2: Fach): boolean {
     return fach1.id === fach2.id;
   }
-  function bereinigung(faecher: Fach[]): Fach[] {
-    const ergebnis: Fach[] = [];
-    faecher.forEach((fach) => {
-      const istDuplikat = ergebnis.some((ufach) =>
-        sindGleicheFaecher(fach, ufach)
-      );
-      if (!istDuplikat) {
-        ergebnis.push(fach);
-      }
-    });
-    return ergebnis;
-  }
-  const faecherOhneDuplikate = bereinigung(faecher);
-  // console.log("hallo", faecherOhneDuplikate);
+
+  const faecherOhneDuplikate = entferneDuplikate(faecher, sindGleicheFaecher);
 
   //Lehrer auslesen als Array von Objekten
   let lehrer: Lehrer[] = csv.flatMap((zeile, index) => {
