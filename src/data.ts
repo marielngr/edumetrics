@@ -47,6 +47,7 @@ export async function ladeDaten(): Promise<Data> {
   csv = csv.map((zeile) => zeile.map((feld) => feld.replace(/_/g, "-")));
 
   // Schuljahre auslesen und nur Werte ohne Leerzeichen oder undefined filtern
+
   let schuljahreIDs = csv.map((zeile) => zeile[1]).filter((sj) => sj);
   //duplicate rausfiltern
   schuljahreIDs = Array.from(new Set(schuljahreIDs));
@@ -131,10 +132,10 @@ export async function ladeDaten(): Promise<Data> {
   const faecherOhneDuplikate = entferneDuplikate(faecher, sindGleicheFaecher);
 
   //Lehrer auslesen als Array von Objekten
-  let lehrer: Lehrer[] = csv.flatMap((zeile, index) => {
+  let lehrer: Lehrer[] = csv.flatMap((zeile) => {
     let lehrerIds = `${zeile[4]}/${zeile[9]}`;
 
-    // Aufteilen der Lehrer-IDs, falls durch "/" getrennt und direkt ein flaches Array von Lehrer-Objekten erstellen
+    // Aufteilen der Lehrer-IDs, falls durch "/" getrennt
     let zeilenLehrer: Lehrer[] = lehrerIds
       .split("/")
       .filter((l) => l)
@@ -156,22 +157,7 @@ export async function ladeDaten(): Promise<Data> {
     return l1.id === l2.id;
   }
 
-  function entferneDuplikateLehrer(lehrer: Lehrer[]): Lehrer[] {
-    const ergebnis: Lehrer[] = [];
-    lehrer.forEach((l) => {
-      const istDuplikat = ergebnis.some((ulehrer) =>
-        sindGleicheLehrer(l, ulehrer)
-      );
-      if (!istDuplikat) {
-        ergebnis.push(l);
-      }
-    });
-    return ergebnis;
-  }
-
-  lehrer = entferneDuplikateLehrer(lehrer);
-
-  // console.log("Lehrer", lehrer);
+  lehrer = entferneDuplikate(lehrer, sindGleicheLehrer);
 
   //Benotungen auslesen
 
