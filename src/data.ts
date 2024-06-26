@@ -23,7 +23,7 @@ export interface Data {
 
 type VergleichFunktion<T> = (element1: T, element2: T) => boolean;
 
-function entferneDuplikate<T>(
+export function entferneDuplikate<T>(
   elemente: T[],
   vergleich: VergleichFunktion<T>
 ): T[] {

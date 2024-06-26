@@ -1,6 +1,7 @@
 import { ladeDaten } from "@/data";
 import { Benotung, Fach, Klasse, Schuljahr } from "@/model";
 import styles from "./page.module.scss";
+import { entferneDuplikate } from "@/data";
 
 function TableHeader() {
   return (
@@ -49,6 +50,10 @@ type TableRowProps = {
   noteneinträge: Benotung[];
 };
 
+function TableRow({ klasse, schuljahr, fach, noteneinträge }: TableRowProps) {
+  //To do:
+}
+
 export default async function Monitoring() {
   const data = await ladeDaten();
 
@@ -57,6 +62,31 @@ export default async function Monitoring() {
   // console.log("faecher: ", data.faecher);
   // console.log("lehrer: ", data.lehrer);
   console.log("benotung: ", data.benotung);
+
+  let zeilenIds = data.benotung.map((benotung) => ({
+    klasseId: benotung.klasseId,
+    fachId: benotung.fachId,
+    schuljahrId: benotung.schuljahrId,
+  }));
+
+  function sindGleich(
+    zeile1: { klasseId: string; fachId: string; schuljahrId: string },
+    zeile2: { klasseId: string; fachId: string; schuljahrId: string }
+  ): boolean {
+    return (
+      zeile1.klasseId === zeile2.klasseId &&
+      zeile1.fachId === zeile2.fachId &&
+      zeile1.schuljahrId === zeile2.schuljahrId
+    );
+  }
+  zeilenIds = entferneDuplikate(zeilenIds, sindGleich);
+
+  zeilenIds = zeilenIds.sort((a, b) => {
+    if (a.schuljahrId < b.schuljahrId) return -1;
+    if (a.schuljahrId > b.schuljahrId) return 1;
+  });
+
+  console.log("zeilenIds: ", zeilenIds);
 
   return (
     <>
