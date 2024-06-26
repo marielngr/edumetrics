@@ -88,6 +88,13 @@
   }
 }
 
+.tableRow {
+  display: flex;
+  flex-direction: row;
+  padding: 0.25rem 0;
+  gap: 1rem;
+}
+
 .tableContentRow {
   display: flex;
   align-items: center;

@@ -61,7 +61,7 @@ export default async function Monitoring() {
   // console.log("klassen: ", data.klassen);
   // console.log("faecher: ", data.faecher);
   // console.log("lehrer: ", data.lehrer);
-  console.log("benotung: ", data.benotung);
+  // console.log("benotung: ", data.benotung);
 
   let zeilenIds = data.benotung.map((benotung) => ({
     klasseId: benotung.klasseId,
@@ -81,12 +81,31 @@ export default async function Monitoring() {
   }
   zeilenIds = entferneDuplikate(zeilenIds, sindGleich);
 
+  //für die Darstellung sortieren
+  //zuerst nach Schuljahr, dann nach Klasse, dann nach Fach
   zeilenIds = zeilenIds.sort((a, b) => {
     if (a.schuljahrId < b.schuljahrId) return -1;
     if (a.schuljahrId > b.schuljahrId) return 1;
+
+    if (a.klasseId < b.klasseId) return -1;
+    if (a.klasseId > b.klasseId) return 1;
+
+    if (a.fachId < b.fachId) return -1;
+    if (a.fachId > b.fachId) return 1;
+
+    return 0;
   });
 
-  console.log("zeilenIds: ", zeilenIds);
+  const rows = zeilenIds.map((zeile) => {
+    const uniqueRowIds = `${zeile.schuljahrId}-${zeile.klasseId}-${zeile.fachId}`;
+    return (
+      <div className={styles.tableRow} key={uniqueRowIds}>
+        <div>{zeile.klasseId}</div>
+        <div>{zeile.schuljahrId}</div>
+        <div>{zeile.fachId}</div>
+      </div>
+    );
+  });
 
   return (
     <>
@@ -100,6 +119,7 @@ export default async function Monitoring() {
           <div className={styles.tablesheet__Wrapper}>
             <TableHeader />
           </div>
+          <div className={styles.tablesheet__Wrapper}>{rows}</div>
         </section>
       </div>
     </>
