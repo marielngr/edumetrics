@@ -10,7 +10,6 @@ export default function UvpS1Layout({
     <>
       <h1 className={styles.ueberschrift}>Monitoring Sek I</h1>
       {children}
-      <nav>Hier können weitere Steuerelemente oder so später hin</nav>
     </>
   );
 }
