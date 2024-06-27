@@ -117,21 +117,35 @@ export default async function Monitoring() {
       return null;
     }
     console.log(noteKa11);
+
+    let noteKa12 = noteneinträge.find(
+      (note) => note.laufendeNummer === 1 && note.periodenNummer === 2
+    );
+    if (!noteKa12) {
+      return null;
+    }
+
     //Halbjahresdurchschnitt berechnen und ausgeben
 
     //Differenz zwischen Eingangsschuljahr und aktuellem Schuljahr berechnen
     const differenz = schuljahr.startjahr - eingangsschuljahr.startjahr;
+
     return (
       <div className={styles.tableRow} key={uniqueRowIds}>
-        <div>{zeile.klasseId}</div>
-        <div>{zeile.schuljahrId}</div>
+        <div className={styles.tableCell}>{zeile.klasseId}</div>
+        <div className={styles.tableCell}>{zeile.schuljahrId}</div>
 
-        <div>
+        <div className={styles.tableCell}>
           {differenz + klasse.eingangsJahrgangsstufe}
           {klasse.kuerzel}
         </div>
-        <div>{zeile.fachId}</div>
-        <div>{`${noteKa11.note} + Fachlehrer`}</div>
+        <div className={styles.tableCell}>{zeile.fachId}</div>
+        <div
+          className={styles.tableCell}
+        >{`${noteKa11.lehrerId}: ${noteKa11.note}`}</div>
+        <div
+          className={styles.tableCell}
+        >{`${noteKa12.note} + Fachlehrer`}</div>
       </div>
     );
   });
@@ -145,10 +159,10 @@ export default async function Monitoring() {
         </section>
         <section className={styles.tablesheet}>
           <h2 className={styles.tablesheet__headline}>Überschrift whatever</h2>
-          <div className={styles.tablesheet__Wrapper}>
+          <div className={styles.tablesheet__wrapper}>
             <TableHeader />
+            <div>{rows}</div>
           </div>
-          <div className={styles.tablesheet__Wrapper}>{rows}</div>
         </section>
       </div>
     </>
