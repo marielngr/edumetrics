@@ -2,6 +2,7 @@ import { ladeDaten } from "@/data";
 import { Benotung, Fach, Klasse, Schuljahr } from "@/model";
 import styles from "./page.module.scss";
 import { entferneDuplikate } from "@/data";
+import { noten } from "@/initial_data";
 
 function TableHeader() {
   return (
@@ -76,7 +77,7 @@ export default async function Monitoring() {
   zeilenIds = zeilenIds.sort((a, b) => {
     if (a.schuljahrId < b.schuljahrId) return -1;
     if (a.schuljahrId > b.schuljahrId) return 1;
-
+    //TODO hier evtl so refactoren, dass nach aktueller Klasse sortiert wird?! Anzeige sonst verwirrend, wenn höhere Klassenstufen zuerst kommen
     if (a.klasseId < b.klasseId) return -1;
     if (a.klasseId > b.klasseId) return 1;
 
@@ -102,52 +103,83 @@ export default async function Monitoring() {
     const differenz = schuljahr.startjahr - eingangsschuljahr.startjahr;
 
     //Noten + Lehrer für diese Klasse, Fach und Schuljahr finden und ausgeben
-    const noteneinträge = data.benotung.filter((noteneintrag) => {
-      return (
-        noteneintrag.klasseId === zeile.klasseId &&
-        noteneintrag.fachId === zeile.fachId &&
-        noteneintrag.schuljahrId === zeile.schuljahrId
-      );
-    });
-    if (!noteneinträge) return;
-    // console.log("noteneinträge", noteneinträge);
 
-    let noteKa11 = noteneinträge.find(
-      (note) => note.laufendeNummer === 1 && note.periodenNummer === 1
-    );
-    if (!noteKa11) {
-      return null;
+    function findNotenFuerKlasseFachSchuljahr(
+      notenArray: Benotung[]
+    ): Benotung[] {
+      let notenProZeile = notenArray
+        .filter(
+          (noten) =>
+            noten.klasseId === zeile.klasseId &&
+            noten.fachId === zeile.fachId &&
+            noten.schuljahrId === zeile.schuljahrId
+        )
+        .sort((a, b) => {
+          if (a.periodenNummer < b.periodenNummer) return -1;
+          if (a.periodenNummer > b.periodenNummer) return 1;
+
+          if (a.laufendeNummer < b.laufendeNummer) return -1;
+          if (a.laufendeNummer > b.laufendeNummer) return 1;
+
+          return 0;
+        });
+
+      if (!notenProZeile) {
+        return [];
+      }
+      return notenProZeile;
     }
-    console.log(noteKa11);
 
-    let noteKa12 = noteneinträge.find(
-      (note) => note.laufendeNummer === 1 && note.periodenNummer === 2
+    const notenProKlasseFachSchuljahr = findNotenFuerKlasseFachSchuljahr(
+      data.benotung
     );
-    if (!noteKa12) {
-      return null;
+
+    const anzuzeigendeLeistungsabschnitte = [
+      [1, 1],
+      [1, 2],
+      [1, 3],
+      [2, 1],
+      [2, 2],
+      [2, 3],
+    ];
+
+    function noteFuerPeriodeUndKlausur(
+      periodenNummer: number,
+      laufendeNummer: number
+    ) {
+      const note = notenProKlasseFachSchuljahr.find(
+        (note) =>
+          note.periodenNummer === periodenNummer &&
+          note.laufendeNummer === laufendeNummer
+      );
+
+      if (!note) {
+        return <div className={styles.tableCell}>-</div>;
+      }
+
+      return (
+        <div className={styles.tableCell}>
+          {note.periodenNummer}-{note.laufendeNummer}-{note.note}/
+          {note.lehrerId}
+        </div>
+      );
     }
 
     //Halbjahresdurchschnitt berechnen und ausgeben
-
-    //Differenz zwischen Eingangsschuljahr und aktuellem Schuljahr berechnen
 
     //Zellen ausgeben
     return (
       <div className={styles.tableRow} key={uniqueRowIds}>
         <div className={styles.tableCell}>{zeile.klasseId}</div>
         <div className={styles.tableCell}>{zeile.schuljahrId}</div>
-
         <div className={styles.tableCell}>
           {differenz + klasse.eingangsJahrgangsstufe}
           {klasse.kuerzel}
         </div>
         <div className={styles.tableCell}>{zeile.fachId}</div>
-        <div
-          className={styles.tableCell}
-        >{`${noteKa11.lehrerId}: Ø ${noteKa11.note}`}</div>
-        <div
-          className={styles.tableCell}
-        >{`${noteKa12.note} + Fachlehrer`}</div>
+        {anzuzeigendeLeistungsabschnitte.map((interesse) =>
+          noteFuerPeriodeUndKlausur(interesse[0], interesse[1])
+        )}
       </div>
     );
   });
