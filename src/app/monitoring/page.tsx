@@ -99,7 +99,9 @@ export default async function Monitoring() {
     );
     if (!eingangsschuljahr) return;
 
-    //Noten für diese Klasse, Fach und Schuljahr finden und ausgeben
+    const differenz = schuljahr.startjahr - eingangsschuljahr.startjahr;
+
+    //Noten + Lehrer für diese Klasse, Fach und Schuljahr finden und ausgeben
     const noteneinträge = data.benotung.filter((noteneintrag) => {
       return (
         noteneintrag.klasseId === zeile.klasseId &&
@@ -128,8 +130,8 @@ export default async function Monitoring() {
     //Halbjahresdurchschnitt berechnen und ausgeben
 
     //Differenz zwischen Eingangsschuljahr und aktuellem Schuljahr berechnen
-    const differenz = schuljahr.startjahr - eingangsschuljahr.startjahr;
 
+    //Zellen ausgeben
     return (
       <div className={styles.tableRow} key={uniqueRowIds}>
         <div className={styles.tableCell}>{zeile.klasseId}</div>
@@ -142,7 +144,7 @@ export default async function Monitoring() {
         <div className={styles.tableCell}>{zeile.fachId}</div>
         <div
           className={styles.tableCell}
-        >{`${noteKa11.lehrerId}: ${noteKa11.note}`}</div>
+        >{`${noteKa11.lehrerId}: Ø ${noteKa11.note}`}</div>
         <div
           className={styles.tableCell}
         >{`${noteKa12.note} + Fachlehrer`}</div>
