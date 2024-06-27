@@ -59,21 +59,8 @@
   display: flex;
   flex-direction: row;
   padding: 0.25rem 0;
-  gap: 0.5rem;
+  gap: 1rem;
   font-weight: bold;
-  border: 2px solid red;
-
-  &__item_first {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgb(170, 124, 168);
-    color: black;
-    text-align: center;
-    width: 5rem;
-    height: 2rem;
-    font-size: smaller;
-  }
 
   &__item {
     display: flex;
@@ -81,8 +68,10 @@
     justify-content: center;
     color: darkmagenta;
     background-color: rgb(197, 161, 195);
-    width: 5rem;
-    height: 2rem;
+    width: 9rem;
+    height: 3rem;
+    font-weight: bolder;
+    font-size: larger;
   }
 }
 
@@ -93,40 +82,13 @@
   gap: 1rem;
 }
 
-.tableContentRow {
+.tableCell {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.25rem 0;
-  gap: 0.5rem;
-  border: 2px solid green;
-
-  &__Container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    border: 2px solid blue;
-  }
-
-  &__item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: darkmagenta;
-    background-color: rgb(197, 161, 195);
-    width: 5rem;
-    height: 2rem;
-  }
-
-  &__item_first {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: darkmagenta;
-    font-weight: bold;
-    font-size: smaller;
-    background-color: rgb(197, 161, 195);
-    width: 5rem;
-    height: 2rem;
-  }
+  color: darkblue;
+  background-color: rgb(220, 197, 218);
+  width: 9rem;
+  height: 3rem;
+  font-weight: bolder;
 }
