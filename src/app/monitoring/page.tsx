@@ -1,12 +1,13 @@
-import { ladeDaten } from "@/data";
+import { entferneDuplikate, ladeDaten } from "@/data";
 import { Benotung, Fach, Klasse, Schuljahr } from "@/model";
 import styles from "./page.module.scss";
-import { entferneDuplikate } from "@/data";
-import { noten } from "@/initial_data";
 
 function TableHeader() {
   return (
     <div className={styles.tableHeader}>
+      <div className={styles.tableHeader__item}>
+        <p>Zeilennr</p>
+      </div>
       <div className={styles.tableHeader__item}>
         <p>Klassen-ID</p>
       </div>
@@ -36,6 +37,12 @@ function TableHeader() {
       </div>
       <div className={styles.tableHeader__item}>
         <p>KA 2.3</p>
+      </div>
+      <div className={styles.tableHeader__item}>
+        <p>Ø 1.HJ</p>
+      </div>
+      <div className={styles.tableHeader__item}>
+        <p>Ø 2.HJ</p>
       </div>
     </div>
   );
@@ -87,8 +94,9 @@ export default async function Monitoring() {
     return 0;
   });
 
-  const rows = zeilenIds.map((zeile) => {
+  const rows = zeilenIds.map((zeile, index) => {
     const uniqueRowIds = `${zeile.schuljahrId}-${zeile.klasseId}-${zeile.fachId}`;
+    const zeilennr = index + 1;
     const klasse = data.klassen.find((klasse) => klasse.id === zeile.klasseId);
     if (!klasse) return; // TODO Fehlerbehandlung
 
@@ -159,7 +167,7 @@ export default async function Monitoring() {
 
       return (
         <div className={styles.tableCell}>
-          {note.periodenNummer}-{note.laufendeNummer}-{note.note}/
+          {note.periodenNummer}-{note.laufendeNummer}: Ø{note.note}/
           {note.lehrerId}
         </div>
       );
@@ -170,6 +178,7 @@ export default async function Monitoring() {
     //Zellen ausgeben
     return (
       <div className={styles.tableRow} key={uniqueRowIds}>
+        <div className={styles.tableCell}>{zeilennr}</div>
         <div className={styles.tableCell}>{zeile.klasseId}</div>
         <div className={styles.tableCell}>{zeile.schuljahrId}</div>
         <div className={styles.tableCell}>
