@@ -21,7 +21,7 @@
   display: flex;
   flex-direction: column;
   flex-basis: 10vw;
-  background-color: #0b4a89;
+  background-color: #a2c0b8;
   border-right: 4px solid #b96f15;
 
   &__content {
@@ -37,7 +37,7 @@
   flex: 1;
   flex-direction: column;
   align-items: flex-start;
-  background-color: aqua;
+  background-color: rgb(226, 237, 237);
   padding-left: 1rem;
 
   &__headline {
@@ -66,8 +66,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: darkmagenta;
-    background-color: rgb(197, 161, 195);
+    color: rgb(254, 129, 40);
+    background-color: rgb(58, 57, 58);
     width: 9rem;
     height: 3rem;
     font-weight: bolder;
@@ -81,14 +81,21 @@
   padding: 0.25rem 0;
   gap: 1rem;
 }
+.tableRow:nth-child(odd) {
+  background-color: #ccc6c6; /* Hellgrau für ungerade Zeilen */
+}
+.tableRow:nth-child(even) {
+  background-color: #fbf5f5; /* Hellgrau für ungerade Zeilen */
+}
 
 .tableCell {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: darkblue;
-  background-color: rgb(220, 197, 218);
+  color: rgb(58, 57, 58);
+  background-color: rgba(122, 118, 121, 0.346);
   width: 9rem;
   height: 3rem;
   font-weight: bolder;
+  border-radius: 10px;
 }

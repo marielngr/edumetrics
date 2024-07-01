@@ -6,7 +6,7 @@ function TableHeader() {
   return (
     <div className={styles.tableHeader}>
       <div className={styles.tableHeader__item}>
-        <p>Zeilennr</p>
+        <p>Zeile</p>
       </div>
       <div className={styles.tableHeader__item}>
         <p>Klassen-ID</p>
@@ -173,7 +173,27 @@ export default async function Monitoring() {
       );
     }
 
-    //Halbjahresdurchschnitt berechnen und ausgeben
+    /**
+     * Halbjahresdurchschnitt berechnen und ausgeben
+     * Kommazahlen auf 2 Stellen runden
+     */
+    function berechneHalbjahresdurchschnitt(periodenNummer: number) {
+      const notenProHalbjahr = notenProKlasseFachSchuljahr.filter(
+        (note) => note.periodenNummer === periodenNummer
+      );
+
+      if (notenProHalbjahr.length === 0) {
+        return <div className={styles.tableCell}>-</div>;
+      }
+
+      let durchschnitt =
+        notenProHalbjahr.reduce((acc, note) => acc + note.note, 0) /
+        notenProHalbjahr.length;
+
+      durchschnitt = Math.round(durchschnitt * 100) / 100;
+
+      return <div className={styles.tableCell}>Ø{durchschnitt}</div>;
+    }
 
     //Zellen ausgeben
     return (
@@ -189,6 +209,12 @@ export default async function Monitoring() {
         {anzuzeigendeLeistungsabschnitte.map((interesse) =>
           noteFuerPeriodeUndKlausur(interesse[0], interesse[1])
         )}
+        <div className={styles.tableCell}>
+          {berechneHalbjahresdurchschnitt(1)}
+        </div>
+        <div className={styles.tableCell}>
+          {berechneHalbjahresdurchschnitt(2)}
+        </div>
       </div>
     );
   });
@@ -198,7 +224,7 @@ export default async function Monitoring() {
       <div className={styles.container}>
         <section className={styles.sidebarLeft}>
           <div className={styles.sidebarLeft__content}>hallo</div>
-          <div className={styles.sidebarLeft__content}>hallo</div>
+          <div className={styles.sidebarLeft__content}>hallo kjhgfdsdfghj</div>
         </section>
         <section className={styles.tablesheet}>
           <h2 className={styles.tablesheet__headline}>Überschrift whatever</h2>
