@@ -23,7 +23,7 @@ export interface Data {
 
 type VergleichFunktion<T> = (element1: T, element2: T) => boolean;
 
-function entferneDuplikate<T>(
+export function entferneDuplikate<T>(
   elemente: T[],
   vergleich: VergleichFunktion<T>
 ): T[] {
@@ -68,6 +68,7 @@ export async function ladeDaten(): Promise<Data> {
       if (!id) {
         return null;
       }
+
       //splitte Strings der Form 10abc in 10 und abc
       const match = zeile[2].match(/^(\d+)(.*)$/);
       let kuerzel: string;
@@ -148,7 +149,6 @@ export async function ladeDaten(): Promise<Data> {
         return ergebnis;
       })
       .filter((l) => l !== null) as Lehrer[];
-
     return zeilenLehrer;
   });
 
@@ -170,13 +170,20 @@ export async function ladeDaten(): Promise<Data> {
       function generiereNote(
         periodennummer: number,
         laufendeNummer: number,
-        lehrerspalte: number,
+        lehrerspalte: number[],
         notenspalte: number
       ): Benotung | null {
-        if (!zeile[lehrerspalte]) {
+        const lehrer =
+          // zuerst Lehrer aus der primären Spalte für dieses Halbjahr nehmen
+          zeile[lehrerspalte[0]] ||
+          // falls in der primären Spalte kein Lehrer steht, aber noch eine zweite Lehrerspalte
+          // angegeben wurde, dann den Lehrer noch aus dieser Spalte nehmen
+          (lehrerspalte.length > 1 && zeile[lehrerspalte[1]]);
+        if (!lehrer) {
+          //console.log("Kein Lehrer:", zeile);
           return null;
         }
-        let lehrerIds = zeile[lehrerspalte].split("/");
+        let lehrerIds = lehrer.split("/");
         if (!zeile[notenspalte]) {
           return null;
         }
@@ -195,21 +202,23 @@ export async function ladeDaten(): Promise<Data> {
       }
 
       return [
-        generiereNote(1, 1, 4, 5),
-        generiereNote(1, 2, 4, 6),
-        generiereNote(1, 3, 4, 7),
-        generiereNote(2, 1, 9, 10),
-        generiereNote(2, 2, 9, 11),
-        generiereNote(2, 3, 9, 12),
+        generiereNote(1, 1, [4], 5),
+        generiereNote(1, 2, [4], 6),
+        generiereNote(1, 3, [4], 7),
+        generiereNote(2, 1, [9, 4], 10),
+        generiereNote(2, 2, [9, 4], 11),
+        generiereNote(2, 3, [9, 4], 12),
       ];
     })
     .filter((n) => n !== null) as Benotung[];
 
-  return {
+  const result = {
     schuljahre: schuljahre,
     klassen: klassenOhneDuplikate,
     faecher: faecherOhneDuplikate,
     lehrer: lehrer,
     benotung: benotung,
   };
+
+  return result;
 }
