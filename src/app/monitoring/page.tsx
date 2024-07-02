@@ -62,6 +62,8 @@ function TableRow({ klasse, schuljahr, fach, noteneinträge }: TableRowProps) {
 export default async function Monitoring() {
   const data = await ladeDaten();
 
+  // console.log("Hier kommen die ausgelesenen Daten:", data.schuljahre.length);
+
   let zeilenIds = data.benotung.map((benotung) => ({
     klasseId: benotung.klasseId,
     fachId: benotung.fachId,
@@ -237,5 +239,3 @@ export default async function Monitoring() {
     </>
   );
 }
-
-// anhand der Organisationsform Darstellung dynamisch anpassen
