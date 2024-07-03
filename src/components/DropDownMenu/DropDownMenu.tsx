@@ -20,6 +20,8 @@ export default function DropDownMenu({ eintraege }: DropDownMenu) {
     setShowMenu(!showMenu);
   }
 
+  console.log("die eintraege sind", eintraege, showMenu);
+
   return (
     <div className={styles.DropDownButtonWrapper}>
       <button
@@ -29,22 +31,26 @@ export default function DropDownMenu({ eintraege }: DropDownMenu) {
       >
         <IoIosArrowDropdownCircle />
       </button>
-      {showMenu &&
-        eintraege.map((eintrag) => {
-          return (
-            <div key={eintrag.id} className={styles.DropDownMenu}>
-              <label htmlFor={eintrag.id}>
-                <input
-                  type="checkbox"
-                  id={eintrag.id}
-                  name={eintrag.id}
-                  defaultChecked={eintrag.selected}
-                />
-                {eintrag.label}
-              </label>
-            </div>
-          );
-        })}
+      {showMenu && (
+        <div className={styles.DropDownMenu}>
+          {eintraege.map((eintrag, index) => {
+            console.log(eintrag, index);
+            return (
+              <div key={eintrag.id}>
+                <label htmlFor={eintrag.id}>
+                  <input
+                    type="checkbox"
+                    id={eintrag.id}
+                    name={eintrag.id}
+                    defaultChecked={eintrag.selected}
+                  />
+                  {eintrag.label}sfsdfsd
+                </label>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
