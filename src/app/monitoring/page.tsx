@@ -12,6 +12,10 @@ function TableHeader() {
     { id: "Klasse_6a", label: "Klasse 6a", selected: false },
   ];
 
+  const schuljahreintraege: DropDownMenuEintrag[] = [
+    { id: "Schuljahr_2021", label: "2021", selected: false },
+  ];
+
   return (
     <div className={styles.tableHeader}>
       <div className={styles.tableHeader__item}>
@@ -23,15 +27,15 @@ function TableHeader() {
       </div>
       <div className={styles.tableHeader__item}>
         <p>Schuljahr</p>
-        {/* <DropDownMenuButton /> */}
+        <DropDownMenu eintraege={schuljahreintraege} />
       </div>
       <div className={styles.tableHeader__item}>
         <p>Klasse</p>
-        {/* <DropDownMenuButton /> */}
+        {/* <DropDownMenu /> */}
       </div>
       <div className={styles.tableHeader__item}>
         <p>Fach</p>
-        {/* <DropDownMenuButton /> */}
+        {/* <DropDownMenu /> */}
       </div>
       <div className={styles.tableHeader__item}>
         <p>KA 1.1</p>
@@ -72,8 +76,6 @@ function TableRow({ klasse, schuljahr, fach, noteneinträge }: TableRowProps) {
 
 export default async function Monitoring() {
   const data = await ladeDaten();
-
-  // console.log("Hier kommen die ausgelesenen Daten:", data.schuljahre.length);
 
   let zeilenIds = data.benotung.map((benotung) => ({
     klasseId: benotung.klasseId,
