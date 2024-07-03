@@ -50,7 +50,6 @@
     flex-direction: column;
     flex-wrap: nowrap;
     align-items: flex-start;
-    border: 3px solid rgb(128, 0, 0);
     margin: 20px;
   }
 }
@@ -65,13 +64,14 @@
   &__item {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
     color: rgb(254, 129, 40);
     background-color: rgb(58, 57, 58);
     width: 9rem;
     height: 3rem;
     font-weight: bolder;
     font-size: larger;
+    padding: 0.5rem;
   }
 }
 

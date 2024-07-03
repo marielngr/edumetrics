@@ -1,8 +1,17 @@
 import { entferneDuplikate, ladeDaten } from "@/data";
 import { Benotung, Fach, Klasse, Schuljahr } from "@/model";
 import styles from "./page.module.scss";
+import DropDownMenu, {
+  DropDownMenuEintrag,
+} from "@/components/DropDownMenu/DropDownMenu";
 
 function TableHeader() {
+  const klasseneintraege: DropDownMenuEintrag[] = [
+    { id: "Klasse_5a", label: "Klasse 5a", selected: false },
+    { id: "Klasse_5b", label: "Klasse 5b", selected: false },
+    { id: "Klasse_6a", label: "Klasse 6a", selected: false },
+  ];
+
   return (
     <div className={styles.tableHeader}>
       <div className={styles.tableHeader__item}>
@@ -10,15 +19,19 @@ function TableHeader() {
       </div>
       <div className={styles.tableHeader__item}>
         <p>Klassen-ID</p>
+        <DropDownMenu eintraege={klasseneintraege} />
       </div>
       <div className={styles.tableHeader__item}>
         <p>Schuljahr</p>
+        {/* <DropDownMenuButton /> */}
       </div>
       <div className={styles.tableHeader__item}>
         <p>Klasse</p>
+        {/* <DropDownMenuButton /> */}
       </div>
       <div className={styles.tableHeader__item}>
         <p>Fach</p>
+        {/* <DropDownMenuButton /> */}
       </div>
       <div className={styles.tableHeader__item}>
         <p>KA 1.1</p>
@@ -35,9 +48,7 @@ function TableHeader() {
       <div className={styles.tableHeader__item}>
         <p>KA 2.2</p>
       </div>
-      <div className={styles.tableHeader__item}>
-        <p>KA 2.3</p>
-      </div>
+      <div className={styles.tableHeader__item}></div>
       <div className={styles.tableHeader__item}>
         <p>Ø 1.HJ</p>
       </div>

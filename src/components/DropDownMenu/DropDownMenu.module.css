@@ -1,0 +1,26 @@
+.DropDownButtonWrapper {
+  /* padding: 1rem; */
+  cursor: pointer;
+  position: relative;
+}
+
+.DropDownButton {
+  color: rgb(254, 129, 40);
+  background-color: rgba(122, 118, 121, 0.346);
+  font-size: 1.5rem;
+  border-color: rgb(18, 16, 16);
+  cursor: pointer;
+}
+
+.DropDownMenu {
+  position: absolute;
+  left: -5.5rem;
+  top: 2.8rem;
+  background-color: rgba(122, 118, 121, 0.346);
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  background-color: rgba(57, 50, 50, 0.608);
+  font-weight: normal;
+  padding: 0.5rem;
+}
