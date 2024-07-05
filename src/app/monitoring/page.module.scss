@@ -54,27 +54,6 @@
   }
 }
 
-.tableHeader {
-  display: flex;
-  flex-direction: row;
-  padding: 0.25rem 0;
-  gap: 1rem;
-  font-weight: bold;
-
-  &__item {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    color: rgb(254, 129, 40);
-    background-color: rgb(58, 57, 58);
-    width: 9rem;
-    height: 3rem;
-    font-weight: bolder;
-    font-size: larger;
-    padding: 0.5rem;
-  }
-}
-
 .tableRow {
   display: flex;
   flex-direction: row;

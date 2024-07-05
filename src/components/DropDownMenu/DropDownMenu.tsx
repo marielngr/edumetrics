@@ -31,8 +31,7 @@ export default function DropDownMenu({ eintraege }: DropDownMenuProps) {
       </button>
       {showMenu && (
         <div className={styles.DropDownMenu}>
-          {eintraege.map((eintrag, index) => {
-            console.log(eintrag, index);
+          {eintraege.map((eintrag) => {
             return (
               <div key={eintrag.id}>
                 <label

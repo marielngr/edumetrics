@@ -1,97 +1,7 @@
 import { entferneDuplikate, ladeDaten } from "@/data";
 import { Benotung, Fach, Klasse, Schuljahr } from "@/model";
+import TableHeader from "@/components/TableHeader/TableHeader";
 import styles from "./page.module.scss";
-import DropDownMenu, {
-  DropDownMenuEintrag,
-} from "@/components/DropDownMenu/DropDownMenu";
-
-type TableHeaderProps = {
-  klassen: Klasse[];
-  schuljahre: Schuljahr[];
-  jahrgaenge: number[];
-  faecher: Fach[];
-};
-
-function TableHeader({
-  klassen,
-  schuljahre,
-  jahrgaenge,
-  faecher,
-}: TableHeaderProps) {
-  const klasseneintraege: DropDownMenuEintrag[] = klassen.map((klasse) => ({
-    id: klasse.id,
-    label: klasse.id,
-    selected: false,
-  }));
-
-  const schuljahreintraege: DropDownMenuEintrag[] = schuljahre.map(
-    (schuljahr) => ({
-      id: schuljahr.id,
-      label: schuljahr.id,
-      selected: false,
-    })
-  );
-
-  const jahrgangseintraege: DropDownMenuEintrag[] = jahrgaenge.map(
-    (jahrgang) => ({
-      id: jahrgang.toString(),
-      label: jahrgang.toString(),
-      selected: false,
-    })
-  );
-
-  const facheintraege: DropDownMenuEintrag[] = faecher.map((fach) => ({
-    id: fach.id,
-    label: fach.id,
-    selected: false,
-  }));
-
-  return (
-    <div className={styles.tableHeader}>
-      <div className={styles.tableHeader__item}>
-        <p>Zeile</p>
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>Klassen-ID</p>
-        <DropDownMenu eintraege={klasseneintraege} />
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>Schuljahr</p>
-        <DropDownMenu eintraege={schuljahreintraege} />
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>Klasse</p>
-        <DropDownMenu eintraege={jahrgangseintraege} />
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>Fach</p>
-        <DropDownMenu eintraege={facheintraege} />
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>KA 1.1</p>
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>KA 1.2</p>
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>KA 1.3</p>
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>KA 2.1</p>
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>KA 2.2</p>
-      </div>
-      <div className={styles.tableHeader__item}></div>
-      <div className={styles.tableHeader__item}>
-        <p>Ø 1.HJ</p>
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>Ø 2.HJ</p>
-      </div>
-    </div>
-  );
-}
 
 type TableRowProps = {
   klasse: Klasse;
@@ -272,8 +182,7 @@ export default async function Monitoring() {
     <>
       <div className={styles.container}>
         <section className={styles.sidebarLeft}>
-          <div className={styles.sidebarLeft__content}>hallo</div>
-          <div className={styles.sidebarLeft__content}>hallo kjhgfdsdfghj</div>
+          <div className={styles.sidebarLeft__content}>Lehrerfilter</div>
         </section>
         <section className={styles.tablesheet}>
           <h2 className={styles.tablesheet__headline}>Überschrift whatever</h2>
