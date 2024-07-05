@@ -5,16 +5,46 @@ import DropDownMenu, {
   DropDownMenuEintrag,
 } from "@/components/DropDownMenu/DropDownMenu";
 
-function TableHeader() {
-  const klasseneintraege: DropDownMenuEintrag[] = [
-    { id: "Klasse_5a", label: "Klasse 5a", selected: false },
-    { id: "Klasse_5b", label: "Klasse 5b", selected: false },
-    { id: "Klasse_6a", label: "Klasse 6a", selected: false },
-  ];
+type TableHeaderProps = {
+  klassen: Klasse[];
+  schuljahre: Schuljahr[];
+  jahrgaenge: number[];
+  faecher: Fach[];
+};
 
-  const schuljahreintraege: DropDownMenuEintrag[] = [
-    { id: "Schuljahr_2021", label: "2021", selected: false },
-  ];
+function TableHeader({
+  klassen,
+  schuljahre,
+  jahrgaenge,
+  faecher,
+}: TableHeaderProps) {
+  const klasseneintraege: DropDownMenuEintrag[] = klassen.map((klasse) => ({
+    id: klasse.id,
+    label: klasse.id,
+    selected: false,
+  }));
+
+  const schuljahreintraege: DropDownMenuEintrag[] = schuljahre.map(
+    (schuljahr) => ({
+      id: schuljahr.id,
+      label: schuljahr.id,
+      selected: false,
+    })
+  );
+
+  const jahrgangseintraege: DropDownMenuEintrag[] = jahrgaenge.map(
+    (jahrgang) => ({
+      id: jahrgang.toString(),
+      label: jahrgang.toString(),
+      selected: false,
+    })
+  );
+
+  const facheintraege: DropDownMenuEintrag[] = faecher.map((fach) => ({
+    id: fach.id,
+    label: fach.id,
+    selected: false,
+  }));
 
   return (
     <div className={styles.tableHeader}>
@@ -31,11 +61,11 @@ function TableHeader() {
       </div>
       <div className={styles.tableHeader__item}>
         <p>Klasse</p>
-        {/* <DropDownMenu /> */}
+        <DropDownMenu eintraege={jahrgangseintraege} />
       </div>
       <div className={styles.tableHeader__item}>
         <p>Fach</p>
-        {/* <DropDownMenu /> */}
+        <DropDownMenu eintraege={facheintraege} />
       </div>
       <div className={styles.tableHeader__item}>
         <p>KA 1.1</p>
@@ -67,10 +97,10 @@ type TableRowProps = {
   klasse: Klasse;
   schuljahr: Schuljahr;
   fach: Fach;
-  noteneinträge: Benotung[];
+  noteneintraege: Benotung[];
 };
 
-function TableRow({ klasse, schuljahr, fach, noteneinträge }: TableRowProps) {
+function TableRow({ klasse, schuljahr, fach, noteneintraege }: TableRowProps) {
   //To do:
 }
 
@@ -211,7 +241,7 @@ export default async function Monitoring() {
     }
 
     //Zellen ausgeben
-    return (
+    const row = (
       <div className={styles.tableRow} key={uniqueRowIds}>
         <div className={styles.tableCell}>{zeilennr}</div>
         <div className={styles.tableCell}>{zeile.klasseId}</div>
@@ -232,7 +262,11 @@ export default async function Monitoring() {
         </div>
       </div>
     );
+    return row;
   });
+
+  const jahrgaenge = [5, 6, 7, 8, 9, 10];
+  const sortierteKlassen = [...data.klassen].sort();
 
   return (
     <>
@@ -244,7 +278,12 @@ export default async function Monitoring() {
         <section className={styles.tablesheet}>
           <h2 className={styles.tablesheet__headline}>Überschrift whatever</h2>
           <div className={styles.tablesheet__wrapper}>
-            <TableHeader />
+            <TableHeader
+              klassen={sortierteKlassen}
+              schuljahre={data.schuljahre}
+              jahrgaenge={jahrgaenge}
+              faecher={data.faecher}
+            />
             <div>{rows}</div>
           </div>
         </section>
@@ -252,3 +291,7 @@ export default async function Monitoring() {
     </>
   );
 }
+
+//refactoren in einzelne Komponenten
+//Filter-Logik --> state für Häkchen setzen in DropDownMenu
+//Lehrerdropdown in Seitenleiste
