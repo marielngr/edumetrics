@@ -50,28 +50,7 @@
     flex-direction: column;
     flex-wrap: nowrap;
     align-items: flex-start;
-    border: 3px solid rgb(128, 0, 0);
     margin: 20px;
-  }
-}
-
-.tableHeader {
-  display: flex;
-  flex-direction: row;
-  padding: 0.25rem 0;
-  gap: 1rem;
-  font-weight: bold;
-
-  &__item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgb(254, 129, 40);
-    background-color: rgb(58, 57, 58);
-    width: 9rem;
-    height: 3rem;
-    font-weight: bolder;
-    font-size: larger;
   }
 }
 

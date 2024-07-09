@@ -1,68 +1,21 @@
 import { entferneDuplikate, ladeDaten } from "@/data";
 import { Benotung, Fach, Klasse, Schuljahr } from "@/model";
+import TableHeader from "@/components/TableHeader/TableHeader";
 import styles from "./page.module.scss";
-
-function TableHeader() {
-  return (
-    <div className={styles.tableHeader}>
-      <div className={styles.tableHeader__item}>
-        <p>Zeile</p>
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>Klassen-ID</p>
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>Schuljahr</p>
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>Klasse</p>
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>Fach</p>
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>KA 1.1</p>
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>KA 1.2</p>
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>KA 1.3</p>
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>KA 2.1</p>
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>KA 2.2</p>
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>KA 2.3</p>
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>Ø 1.HJ</p>
-      </div>
-      <div className={styles.tableHeader__item}>
-        <p>Ø 2.HJ</p>
-      </div>
-    </div>
-  );
-}
 
 type TableRowProps = {
   klasse: Klasse;
   schuljahr: Schuljahr;
   fach: Fach;
-  noteneinträge: Benotung[];
+  noteneintraege: Benotung[];
 };
 
-function TableRow({ klasse, schuljahr, fach, noteneinträge }: TableRowProps) {
+function TableRow({ klasse, schuljahr, fach, noteneintraege }: TableRowProps) {
   //To do:
 }
 
 export default async function Monitoring() {
   const data = await ladeDaten();
-
-  // console.log("Hier kommen die ausgelesenen Daten:", data.schuljahre.length);
 
   let zeilenIds = data.benotung.map((benotung) => ({
     klasseId: benotung.klasseId,
@@ -198,7 +151,7 @@ export default async function Monitoring() {
     }
 
     //Zellen ausgeben
-    return (
+    const row = (
       <div className={styles.tableRow} key={uniqueRowIds}>
         <div className={styles.tableCell}>{zeilennr}</div>
         <div className={styles.tableCell}>{zeile.klasseId}</div>
@@ -219,19 +172,27 @@ export default async function Monitoring() {
         </div>
       </div>
     );
+    return row;
   });
+
+  const jahrgaenge = [5, 6, 7, 8, 9, 10];
+  const sortierteKlassen = [...data.klassen].sort();
 
   return (
     <>
       <div className={styles.container}>
         <section className={styles.sidebarLeft}>
-          <div className={styles.sidebarLeft__content}>hallo</div>
-          <div className={styles.sidebarLeft__content}>hallo kjhgfdsdfghj</div>
+          <div className={styles.sidebarLeft__content}>Lehrerfilter</div>
         </section>
         <section className={styles.tablesheet}>
           <h2 className={styles.tablesheet__headline}>Überschrift whatever</h2>
           <div className={styles.tablesheet__wrapper}>
-            <TableHeader />
+            <TableHeader
+              klassen={sortierteKlassen}
+              schuljahre={data.schuljahre}
+              jahrgaenge={jahrgaenge}
+              faecher={data.faecher}
+            />
             <div>{rows}</div>
           </div>
         </section>
@@ -239,3 +200,7 @@ export default async function Monitoring() {
     </>
   );
 }
+
+//refactoren in einzelne Komponenten
+//Filter-Logik --> state für Häkchen setzen in DropDownMenu
+//Lehrerdropdown in Seitenleiste
