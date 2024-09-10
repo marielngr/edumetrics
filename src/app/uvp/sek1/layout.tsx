@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./page.module.scss";
 
-export default function UvpS1Layout({
+export default function MonitoringLayout({
   children,
 }: {
   children: React.ReactNode;
