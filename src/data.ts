@@ -23,6 +23,13 @@ export interface Data {
 
 type VergleichFunktion<T> = (element1: T, element2: T) => boolean;
 
+/**
+ * diese Funktion entfernt doppelte Elemente aus einem Array. Dafür bekommt es ein
+ * Array von Elementen und eine Vergleichsfunktion, die zwei Elemente vergleicht und true zurückgibt, wenn sie gleich sind.
+ * @param elemente das Array, aus dem die Duplikate entfernt werden sollen
+ * @param vergleich die Vergleichsfunktion, die zwei Elemente vergleicht
+ * @returns das Array ohne Duplikate
+ */
 export function entferneDuplikate<T>(
   elemente: T[],
   vergleich: VergleichFunktion<T>
