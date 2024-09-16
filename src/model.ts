@@ -1,5 +1,3 @@
-import { machine } from "os";
-
 export type FachId = string;
 export type LehrerId = string;
 export type KlasseId = string;
@@ -109,3 +107,35 @@ export interface Benotung {
 //   fachId: FachId;
 //   stundenanzahl: number;
 // }
+export type KlasseFachSchuljahrId = {
+  klasseId: KlasseId;
+  fachId: FachId;
+  schuljahrId: SchuljahrId;
+};
+
+export function klasseFachSchuljahrSindGleich(
+  zeile1: KlasseFachSchuljahrId,
+  zeile2: KlasseFachSchuljahrId
+): boolean {
+  return (
+    zeile1.klasseId === zeile2.klasseId &&
+    zeile1.fachId === zeile2.fachId &&
+    zeile1.schuljahrId === zeile2.schuljahrId
+  );
+}
+
+export function klasseFachSchuljahrCompare(
+  a: KlasseFachSchuljahrId,
+  b: KlasseFachSchuljahrId
+) {
+  if (a.schuljahrId < b.schuljahrId) return -1;
+  if (a.schuljahrId > b.schuljahrId) return 1;
+  //TODO hier evtl so refactoren, dass nach aktueller Klasse sortiert wird?! Anzeige sonst verwirrend, wenn höhere Klassenstufen zuerst kommen
+  if (a.klasseId < b.klasseId) return -1;
+  if (a.klasseId > b.klasseId) return 1;
+
+  if (a.fachId < b.fachId) return -1;
+  if (a.fachId > b.fachId) return 1;
+
+  return 0;
+}

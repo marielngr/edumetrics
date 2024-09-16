@@ -81,7 +81,9 @@ export default function TableHeader({
       <div className={styles.tableCell}>
         <p>KA 2.2</p>
       </div>
-      <div className={styles.tableCell}></div>
+      <div className={styles.tableCell}>
+        <p>KA 2.3</p>
+      </div>
       <div className={styles.tableCell}>
         <p>Ø 1.HJ</p>
       </div>

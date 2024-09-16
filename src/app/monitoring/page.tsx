@@ -1,17 +1,134 @@
 import { entferneDuplikate, ladeDaten } from "@/data";
-import { Benotung, Fach, Klasse, Schuljahr } from "@/model";
+import {
+  Benotung,
+  Fach,
+  Klasse,
+  Schuljahr,
+  KlasseFachSchuljahrId,
+  klasseFachSchuljahrSindGleich,
+  klasseFachSchuljahrCompare,
+} from "@/model";
 import TableHeader from "@/components/TableHeader/TableHeader";
 import styles from "./page.module.scss";
 
 type TableRowProps = {
+  zeile: KlasseFachSchuljahrId;
+  zeilennr: number;
   klasse: Klasse;
-  schuljahr: Schuljahr;
-  fach: Fach;
-  noteneintraege: Benotung[];
+  jahrgang: number;
+  benotung: Benotung[];
 };
 
-function TableRow({ klasse, schuljahr, fach, noteneintraege }: TableRowProps) {
-  //To do:
+function TableRow({
+  zeile,
+  zeilennr,
+  klasse,
+  jahrgang,
+  benotung,
+}: TableRowProps) {
+  const anzuzeigendeLeistungsabschnitte = [
+    [1, 1],
+    [1, 2],
+    [1, 3],
+    [2, 1],
+    [2, 2],
+    [2, 3],
+  ];
+
+  function noteFuerPeriodeUndKlausur(
+    periodenNummer: number,
+    laufendeNummer: number
+  ) {
+    const note = benotung.find(
+      (note) =>
+        note.periodenNummer === periodenNummer &&
+        note.laufendeNummer === laufendeNummer
+    );
+
+    if (!note) {
+      return <div className={styles.tableCell}>-</div>;
+    }
+
+    return (
+      <div className={styles.tableCell}>
+        {note.periodenNummer}-{note.laufendeNummer}: Ø{note.note}/
+        {note.lehrerId}
+      </div>
+    );
+  }
+
+  const halbjahresdurchschnitte = [
+    berechneHalbjahresdurchschnitt(benotung, 1),
+    berechneHalbjahresdurchschnitt(benotung, 2),
+  ];
+
+  return (
+    <div className={styles.tableRow}>
+      <div className={styles.tableCell}>{zeilennr}</div>
+      <div className={styles.tableCell}>{zeile.klasseId}</div>
+      <div className={styles.tableCell}>{zeile.schuljahrId}</div>
+      <div className={styles.tableCell}>
+        {jahrgang} {klasse.kuerzel}
+      </div>
+      <div className={styles.tableCell}>{zeile.fachId}</div>
+      {anzuzeigendeLeistungsabschnitte.map((interesse) =>
+        noteFuerPeriodeUndKlausur(interesse[0], interesse[1])
+      )}
+      <div className={styles.tableCell}>Ø{halbjahresdurchschnitte[0]}</div>
+      <div className={styles.tableCell}>Ø{halbjahresdurchschnitte[1]}</div>
+    </div>
+  );
+}
+//to do: in utils auslagern
+function findNotenFuerKlasseFachSchuljahr(
+  notenArray: Benotung[],
+  zeile: KlasseFachSchuljahrId
+): Benotung[] {
+  let notenProZeile = notenArray
+    .filter(
+      (noten) =>
+        noten.klasseId === zeile.klasseId &&
+        noten.fachId === zeile.fachId &&
+        noten.schuljahrId === zeile.schuljahrId
+    )
+    .sort((a, b) => {
+      if (a.periodenNummer < b.periodenNummer) return -1;
+      if (a.periodenNummer > b.periodenNummer) return 1;
+
+      if (a.laufendeNummer < b.laufendeNummer) return -1;
+      if (a.laufendeNummer > b.laufendeNummer) return 1;
+
+      return 0;
+    });
+
+  if (!notenProZeile) {
+    return [];
+  }
+  return notenProZeile;
+}
+
+/**
+ * Halbjahresdurchschnitt berechnen und ausgeben
+ * Kommazahlen auf 2 Stellen runden
+ */
+function berechneHalbjahresdurchschnitt(
+  notenProKlasseFachSchuljahr: Benotung[],
+  periodenNummer: number
+) {
+  const notenProHalbjahr = notenProKlasseFachSchuljahr.filter(
+    (note) => note.periodenNummer === periodenNummer
+  );
+
+  if (notenProHalbjahr.length === 0) {
+    return null;
+  }
+
+  let durchschnitt =
+    notenProHalbjahr.reduce((acc, note) => acc + note.note, 0) /
+    notenProHalbjahr.length;
+
+  durchschnitt = Math.round(durchschnitt * 100) / 100;
+  return durchschnitt;
 }
 
 export default async function Monitoring() {
@@ -23,37 +140,16 @@ export default async function Monitoring() {
     schuljahrId: benotung.schuljahrId,
   }));
 
-  function sindGleich(
-    zeile1: { klasseId: string; fachId: string; schuljahrId: string },
-    zeile2: { klasseId: string; fachId: string; schuljahrId: string }
-  ): boolean {
-    return (
-      zeile1.klasseId === zeile2.klasseId &&
-      zeile1.fachId === zeile2.fachId &&
-      zeile1.schuljahrId === zeile2.schuljahrId
-    );
-  }
-  zeilenIds = entferneDuplikate(zeilenIds, sindGleich);
+  zeilenIds = entferneDuplikate(zeilenIds, klasseFachSchuljahrSindGleich);
 
   //für die Darstellung sortieren - zuerst nach Schuljahr, dann nach Klasse, dann nach Fach
-  zeilenIds = zeilenIds.sort((a, b) => {
-    if (a.schuljahrId < b.schuljahrId) return -1;
-    if (a.schuljahrId > b.schuljahrId) return 1;
-    //TODO hier evtl so refactoren, dass nach aktueller Klasse sortiert wird?! Anzeige sonst verwirrend, wenn höhere Klassenstufen zuerst kommen
-    if (a.klasseId < b.klasseId) return -1;
-    if (a.klasseId > b.klasseId) return 1;
-
-    if (a.fachId < b.fachId) return -1;
-    if (a.fachId > b.fachId) return 1;
-
-    return 0;
-  });
+  zeilenIds = zeilenIds.sort(klasseFachSchuljahrCompare);
 
   const rows = zeilenIds.map((zeile, index) => {
     const uniqueRowIds = `${zeile.schuljahrId}-${zeile.klasseId}-${zeile.fachId}`;
     const zeilennr = index + 1;
     const klasse = data.klassen.find((klasse) => klasse.id === zeile.klasseId);
-    if (!klasse) return; // TODO Fehlerbehandlung
+    if (!klasse) return; // TODO Fehlerbehandlung, z.B. DIV Mit Fehlermeldung
 
     const schuljahr = data.schuljahre.find((s) => s.id === zeile.schuljahrId);
     if (!schuljahr) return;
@@ -66,113 +162,21 @@ export default async function Monitoring() {
     const differenz = schuljahr.startjahr - eingangsschuljahr.startjahr;
 
     //Noten + Lehrer für diese Klasse, Fach und Schuljahr finden und ausgeben
-
-    function findNotenFuerKlasseFachSchuljahr(
-      notenArray: Benotung[]
-    ): Benotung[] {
-      let notenProZeile = notenArray
-        .filter(
-          (noten) =>
-            noten.klasseId === zeile.klasseId &&
-            noten.fachId === zeile.fachId &&
-            noten.schuljahrId === zeile.schuljahrId
-        )
-        .sort((a, b) => {
-          if (a.periodenNummer < b.periodenNummer) return -1;
-          if (a.periodenNummer > b.periodenNummer) return 1;
-
-          if (a.laufendeNummer < b.laufendeNummer) return -1;
-          if (a.laufendeNummer > b.laufendeNummer) return 1;
-
-          return 0;
-        });
-
-      if (!notenProZeile) {
-        return [];
-      }
-      return notenProZeile;
-    }
-
     const notenProKlasseFachSchuljahr = findNotenFuerKlasseFachSchuljahr(
-      data.benotung
+      data.benotung,
+      zeile
     );
 
-    const anzuzeigendeLeistungsabschnitte = [
-      [1, 1],
-      [1, 2],
-      [1, 3],
-      [2, 1],
-      [2, 2],
-      [2, 3],
-    ];
-
-    function noteFuerPeriodeUndKlausur(
-      periodenNummer: number,
-      laufendeNummer: number
-    ) {
-      const note = notenProKlasseFachSchuljahr.find(
-        (note) =>
-          note.periodenNummer === periodenNummer &&
-          note.laufendeNummer === laufendeNummer
-      );
-
-      if (!note) {
-        return <div className={styles.tableCell}>-</div>;
-      }
-
-      return (
-        <div className={styles.tableCell}>
-          {note.periodenNummer}-{note.laufendeNummer}: Ø{note.note}/
-          {note.lehrerId}
-        </div>
-      );
-    }
-
-    /**
-     * Halbjahresdurchschnitt berechnen und ausgeben
-     * Kommazahlen auf 2 Stellen runden
-     */
-    function berechneHalbjahresdurchschnitt(periodenNummer: number) {
-      const notenProHalbjahr = notenProKlasseFachSchuljahr.filter(
-        (note) => note.periodenNummer === periodenNummer
-      );
-
-      if (notenProHalbjahr.length === 0) {
-        return <div className={styles.tableCell}>-</div>;
-      }
-
-      let durchschnitt =
-        notenProHalbjahr.reduce((acc, note) => acc + note.note, 0) /
-        notenProHalbjahr.length;
-
-      durchschnitt = Math.round(durchschnitt * 100) / 100;
-
-      return <div className={styles.tableCell}>Ø{durchschnitt}</div>;
-    }
-
-    //Zellen ausgeben
-    const row = (
-      <div className={styles.tableRow} key={uniqueRowIds}>
-        <div className={styles.tableCell}>{zeilennr}</div>
-        <div className={styles.tableCell}>{zeile.klasseId}</div>
-        <div className={styles.tableCell}>{zeile.schuljahrId}</div>
-        <div className={styles.tableCell}>
-          {differenz + klasse.eingangsJahrgangsstufe}
-          {klasse.kuerzel}
-        </div>
-        <div className={styles.tableCell}>{zeile.fachId}</div>
-        {anzuzeigendeLeistungsabschnitte.map((interesse) =>
-          noteFuerPeriodeUndKlausur(interesse[0], interesse[1])
-        )}
-        <div className={styles.tableCell}>
-          {berechneHalbjahresdurchschnitt(1)}
-        </div>
-        <div className={styles.tableCell}>
-          {berechneHalbjahresdurchschnitt(2)}
-        </div>
-      </div>
+    return (
+      <TableRow
+        key={uniqueRowIds}
+        zeile={zeile}
+        zeilennr={zeilennr}
+        klasse={klasse}
+        jahrgang={differenz + klasse.eingangsJahrgangsstufe}
+        benotung={notenProKlasseFachSchuljahr}
+      />
     );
-    return row;
   });
 
   const jahrgaenge = [5, 6, 7, 8, 9, 10];
