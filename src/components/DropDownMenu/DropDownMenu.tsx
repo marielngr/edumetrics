@@ -14,7 +14,7 @@ export type DropDownMenuEintrag = {
 };
 
 export default function DropDownMenu({ eintraege }: DropDownMenuProps) {
-  const [showMenu, setShowMenu] = useState(true);
+  const [showMenu, setShowMenu] = useState(false);
 
   function handleClick() {
     setShowMenu(!showMenu);
