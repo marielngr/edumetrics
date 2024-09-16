@@ -4,18 +4,74 @@ import TableHeader from "@/components/TableHeader/TableHeader";
 import styles from "./page.module.scss";
 
 type TableRowProps = {
+  zeile: { klasseId: string; fachId: string; schuljahrId: string };
+  zeilennr: number;
   klasse: Klasse;
-  schuljahr: Schuljahr;
-  fach: Fach;
-  noteneintraege: Benotung[];
+  halbjahresdurchschnitte: (number | null)[];
+  jahrgang: number;
+  benotung: Benotung[];
 };
 
-function TableRow({ klasse, schuljahr, fach, noteneintraege }: TableRowProps) {
-  //To do:
+function TableRow({
+  zeile,
+  zeilennr,
+  klasse,
+  halbjahresdurchschnitte,
+  jahrgang,
+  benotung,
+}: TableRowProps) {
+  const anzuzeigendeLeistungsabschnitte = [
+    [1, 1],
+    [1, 2],
+    [1, 3],
+    [2, 1],
+    [2, 2],
+    [2, 3],
+  ];
+
+  function noteFuerPeriodeUndKlausur(
+    periodenNummer: number,
+    laufendeNummer: number
+  ) {
+    const note = benotung.find(
+      (note) =>
+        note.periodenNummer === periodenNummer &&
+        note.laufendeNummer === laufendeNummer
+    );
+
+    if (!note) {
+      return <div className={styles.tableCell}>-</div>;
+    }
+
+    return (
+      <div className={styles.tableCell}>
+        {note.periodenNummer}-{note.laufendeNummer}: Ø{note.note}/
+        {note.lehrerId}
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.tableRow}>
+      <div className={styles.tableCell}>{zeilennr}</div>
+      <div className={styles.tableCell}>{zeile.klasseId}</div>
+      <div className={styles.tableCell}>{zeile.schuljahrId}</div>
+      <div className={styles.tableCell}>
+        {jahrgang} {klasse.kuerzel}
+      </div>
+      <div className={styles.tableCell}>{zeile.fachId}</div>
+      {anzuzeigendeLeistungsabschnitte.map((interesse) =>
+        noteFuerPeriodeUndKlausur(interesse[0], interesse[1])
+      )}
+      <div className={styles.tableCell}>Ø{halbjahresdurchschnitte[0]}</div>
+      <div className={styles.tableCell}>Ø{halbjahresdurchschnitte[1]}</div>
+    </div>
+  );
 }
 
 export default async function Monitoring() {
   const data = await ladeDaten();
+  console.log(data);
 
   let zeilenIds = data.benotung.map((benotung) => ({
     klasseId: benotung.klasseId,
@@ -97,37 +153,6 @@ export default async function Monitoring() {
       data.benotung
     );
 
-    const anzuzeigendeLeistungsabschnitte = [
-      [1, 1],
-      [1, 2],
-      [1, 3],
-      [2, 1],
-      [2, 2],
-      [2, 3],
-    ];
-
-    function noteFuerPeriodeUndKlausur(
-      periodenNummer: number,
-      laufendeNummer: number
-    ) {
-      const note = notenProKlasseFachSchuljahr.find(
-        (note) =>
-          note.periodenNummer === periodenNummer &&
-          note.laufendeNummer === laufendeNummer
-      );
-
-      if (!note) {
-        return <div className={styles.tableCell}>-</div>;
-      }
-
-      return (
-        <div className={styles.tableCell}>
-          {note.periodenNummer}-{note.laufendeNummer}: Ø{note.note}/
-          {note.lehrerId}
-        </div>
-      );
-    }
-
     /**
      * Halbjahresdurchschnitt berechnen und ausgeben
      * Kommazahlen auf 2 Stellen runden
@@ -138,7 +163,7 @@ export default async function Monitoring() {
       );
 
       if (notenProHalbjahr.length === 0) {
-        return <div className={styles.tableCell}>-</div>;
+        return null;
       }
 
       let durchschnitt =
@@ -146,33 +171,25 @@ export default async function Monitoring() {
         notenProHalbjahr.length;
 
       durchschnitt = Math.round(durchschnitt * 100) / 100;
-
-      return <div className={styles.tableCell}>Ø{durchschnitt}</div>;
+      return durchschnitt;
     }
 
-    //Zellen ausgeben
-    const row = (
-      <div className={styles.tableRow} key={uniqueRowIds}>
-        <div className={styles.tableCell}>{zeilennr}</div>
-        <div className={styles.tableCell}>{zeile.klasseId}</div>
-        <div className={styles.tableCell}>{zeile.schuljahrId}</div>
-        <div className={styles.tableCell}>
-          {differenz + klasse.eingangsJahrgangsstufe}
-          {klasse.kuerzel}
-        </div>
-        <div className={styles.tableCell}>{zeile.fachId}</div>
-        {anzuzeigendeLeistungsabschnitte.map((interesse) =>
-          noteFuerPeriodeUndKlausur(interesse[0], interesse[1])
-        )}
-        <div className={styles.tableCell}>
-          {berechneHalbjahresdurchschnitt(1)}
-        </div>
-        <div className={styles.tableCell}>
-          {berechneHalbjahresdurchschnitt(2)}
-        </div>
-      </div>
+    const halbjahresdurchschnitte = [
+      berechneHalbjahresdurchschnitt(1),
+      berechneHalbjahresdurchschnitt(2),
+    ];
+
+    return (
+      <TableRow
+        key={uniqueRowIds}
+        zeile={zeile}
+        zeilennr={zeilennr}
+        klasse={klasse}
+        jahrgang={differenz + klasse.eingangsJahrgangsstufe}
+        halbjahresdurchschnitte={halbjahresdurchschnitte}
+        benotung={notenProKlasseFachSchuljahr}
+      />
     );
-    return row;
   });
 
   const jahrgaenge = [5, 6, 7, 8, 9, 10];
