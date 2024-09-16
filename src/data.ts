@@ -178,7 +178,8 @@ export async function ladeDaten(): Promise<Data> {
         periodennummer: number,
         laufendeNummer: number,
         lehrerspalte: number[],
-        notenspalte: number
+        notenspalte: number,
+        fallbackSpalte?: number
       ): Benotung | null {
         const lehrer =
           // zuerst Lehrer aus der primären Spalte für dieses Halbjahr nehmen
@@ -191,10 +192,13 @@ export async function ladeDaten(): Promise<Data> {
           return null;
         }
         let lehrerIds = lehrer.split("/");
-        if (!zeile[notenspalte]) {
+
+        const noteAlsString =
+          zeile[notenspalte] || (fallbackSpalte && zeile[fallbackSpalte]);
+        if (!noteAlsString) {
           return null;
         }
-        let note = parseFloat(zeile[notenspalte].replace(",", "."));
+        let note = parseFloat(noteAlsString.replace(",", "."));
 
         return {
           id: generiereZufaelligeId(),
@@ -209,12 +213,12 @@ export async function ladeDaten(): Promise<Data> {
       }
 
       return [
-        generiereNote(1, 1, [4], 5),
-        generiereNote(1, 2, [4], 6),
-        generiereNote(1, 3, [4], 7),
-        generiereNote(2, 1, [9, 4], 10),
-        generiereNote(2, 2, [9, 4], 11),
-        generiereNote(2, 3, [9, 4], 12),
+        generiereNote(1, 1, [4], 5, 8),
+        generiereNote(1, 2, [4], 6, 8),
+        generiereNote(1, 3, [4], 7, 8),
+        generiereNote(2, 1, [9, 4], 10, 13),
+        generiereNote(2, 2, [9, 4], 11, 13),
+        generiereNote(2, 3, [9, 4], 12, 13),
       ];
     })
     .filter((n) => n !== null) as Benotung[];
