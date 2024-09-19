@@ -53,7 +53,7 @@ function TableRow({ faecher, lehrer }: TableRowProps) {
 }
 
 export default function VerteilungsplanS1() {
-  console.log("klassen:", klassen);
+  //console.log("klassen:", klassen);
 
   return (
     <div className={styles.container}>
