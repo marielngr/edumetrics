@@ -1,4 +1,4 @@
-import { entferneDuplikate, ladeDaten } from "@/data";
+import { ladeDaten } from "@/data";
 import {
   // Benotung,
   // KlasseFachSchuljahrId,
@@ -9,7 +9,11 @@ import {
 } from "@/model";
 import TableHeader from "@/components/TableHeader/TableHeader";
 import styles from "./page.module.scss";
-import { filterRows, findNotenFuerKlasseFachSchuljahr } from "@/utils/utils";
+import {
+  entferneDuplikate,
+  filterRows,
+  findNotenFuerKlasseFachSchuljahr,
+} from "@/utils/utils";
 import TableRow from "@/components/TableRow/TableRow";
 
 export default async function Monitoring() {
