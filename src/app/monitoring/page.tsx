@@ -37,7 +37,7 @@ export default async function Monitoring() {
   }));
 
   //Filter für angezeigte rows
-  const selectedItems: KlasseId[] = [];
+  const selectedItems: KlasseId[] = ["2013-14-5a", "2016-17-5a"];
 
   zeilenIds = filterRows(selectedItems, zeilenIds);
 
