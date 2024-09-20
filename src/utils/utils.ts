@@ -1,4 +1,4 @@
-import { Benotung, KlasseFachSchuljahrId, KlasseId } from "@/model";
+import { Benotung, FachId, KlasseFachSchuljahrId, KlasseId } from "@/model";
 
 export function findNotenFuerKlasseFachSchuljahr(
   notenArray: Benotung[],
@@ -30,7 +30,7 @@ export function findNotenFuerKlasseFachSchuljahr(
 /**diese Funktionen filtern den Datensatz nach übergebenen Filterkriterien
  * und geben ein neues Array mit neuen Ergebnissen zurück*/
 
-export function filterRows(
+export function filterRowsByKlasseID(
   selectedKlasseIds: KlasseId[],
   rows: KlasseFachSchuljahrId[]
 ) {
@@ -39,6 +39,20 @@ export function filterRows(
     const klasse = row.klasseId;
 
     return selectedKlasseIds.includes(klasse);
+  });
+
+  return filteredRows;
+}
+
+export function filterRowsByFachId(
+  selectedFachIds: FachId[],
+  rows: KlasseFachSchuljahrId[]
+) {
+  const filteredRows = rows.filter((row) => {
+    if (selectedFachIds.length === 0) return true;
+    const fach = row.fachId;
+
+    return selectedFachIds.includes(fach);
   });
 
   return filteredRows;

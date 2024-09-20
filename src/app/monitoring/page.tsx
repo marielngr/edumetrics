@@ -6,12 +6,14 @@ import {
   klasseFachSchuljahrCompare,
   KlasseFachSchuljahrId,
   KlasseId,
+  FachId,
 } from "@/model";
 import TableHeader from "@/components/TableHeader/TableHeader";
 import styles from "./page.module.scss";
 import {
   entferneDuplikate,
-  filterRows,
+  filterRowsByFachId,
+  filterRowsByKlasseID,
   findNotenFuerKlasseFachSchuljahr,
 } from "@/utils/utils";
 import TableRow from "@/components/TableRow/TableRow";
@@ -26,9 +28,13 @@ export default async function Monitoring() {
   }));
 
   //Filter für angezeigte rows
-  const selectedItems: KlasseId[] = ["2013-14-5a", "2016-17-5a"];
+  const selectedKlassen: KlasseId[] = ["2013-14-5b"];
 
-  zeilenIds = filterRows(selectedItems, zeilenIds);
+  zeilenIds = filterRowsByKlasseID(selectedKlassen, zeilenIds);
+
+  const selectedFaecher: FachId[] = ["D"];
+
+  zeilenIds = filterRowsByFachId(selectedFaecher, zeilenIds);
 
   zeilenIds = entferneDuplikate(zeilenIds, klasseFachSchuljahrSindGleich);
 
