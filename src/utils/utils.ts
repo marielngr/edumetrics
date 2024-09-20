@@ -1,4 +1,4 @@
-import { Benotung, KlasseFachSchuljahrId } from "@/model";
+import { Benotung, KlasseFachSchuljahrId, KlasseId } from "@/model";
 
 export function findNotenFuerKlasseFachSchuljahr(
   notenArray: Benotung[],
