@@ -9,23 +9,8 @@ import {
 } from "@/model";
 import TableHeader from "@/components/TableHeader/TableHeader";
 import styles from "./page.module.scss";
-import { findNotenFuerKlasseFachSchuljahr } from "@/utils/utils";
+import { filterRows, findNotenFuerKlasseFachSchuljahr } from "@/utils/utils";
 import TableRow from "@/components/TableRow/TableRow";
-
-/**diese Funktion filtert den Datensatz nach übergebenen Filterkriterien und gibt ein neues Array mit den neuen Ergebnissen zurück*/
-function filterRows(
-  selectedKlasseIds: KlasseId[],
-  rows: KlasseFachSchuljahrId[]
-) {
-  const filteredRows = rows.filter((row) => {
-    if (selectedKlasseIds.length === 0) return true;
-    const klasse = row.klasseId;
-
-    return selectedKlasseIds.includes(klasse);
-  });
-
-  return filteredRows;
-}
 
 export default async function Monitoring() {
   const data = await ladeDaten();

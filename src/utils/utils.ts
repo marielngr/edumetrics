@@ -26,3 +26,19 @@ export function findNotenFuerKlasseFachSchuljahr(
   }
   return notenProZeile;
 }
+
+/**diese Funktionen filtern den Datensatz nach übergebenen Filterkriterien
+ * und geben ein neues Array mit neuen Ergebnissen zurück*/
+export function filterRows(
+  selectedKlasseIds: KlasseId[],
+  rows: KlasseFachSchuljahrId[]
+) {
+  const filteredRows = rows.filter((row) => {
+    if (selectedKlasseIds.length === 0) return true;
+    const klasse = row.klasseId;
+
+    return selectedKlasseIds.includes(klasse);
+  });
+
+  return filteredRows;
+}
