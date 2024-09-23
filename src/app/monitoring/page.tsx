@@ -1,4 +1,4 @@
-import { ladeDaten } from "@/data";
+import { Data, ladeDaten } from "@/data";
 import {
   // Benotung,
   // KlasseFachSchuljahrId,
@@ -7,6 +7,7 @@ import {
   KlasseFachSchuljahrId,
   KlasseId,
   FachId,
+  SchuljahrId,
 } from "@/model";
 import TableHeader from "@/components/TableHeader/TableHeader";
 import styles from "./page.module.scss";
@@ -14,12 +15,47 @@ import {
   entferneDuplikate,
   filterRowsByFachId,
   filterRowsByKlasseID,
+  filterRowsBySchuljahrId,
   findNotenFuerKlasseFachSchuljahr,
 } from "@/utils/utils";
 import TableRow from "@/components/TableRow/TableRow";
+import { get } from "http";
+
+type Klassenkuerzel = {
+  jahrgang: number;
+  kuerzel: string;
+};
+
+function getKlassenkuerzelFuerKlasseInSchuljahr(
+  klasseId: KlasseId,
+  schuljahrId: SchuljahrId,
+  data: Data
+): Klassenkuerzel | null {
+  //passende Klasse heraussuchen
+  const klasse = data.klassen.find((klasse) => klasse.id === klasseId);
+  if (!klasse) return null;
+
+  //passendes Schuljahr heraussuchen
+  const schuljahr = data.schuljahre.find((s) => s.id === schuljahrId);
+  if (!schuljahr) return null;
+
+  //Eingangsschuljahr der Klasse heraussuchen
+  const eingangsschuljahr = data.schuljahre.find(
+    (s) => s.id === klasse.eingangsSchuljahr
+  );
+  if (!eingangsschuljahr) return null;
+
+  //DIfferenz zwischen aktuellem Schuljahr und Eingangsschuljahr berechnen
+  const differenz = schuljahr.startjahr - eingangsschuljahr.startjahr;
+
+  const jahrgang = differenz + klasse.eingangsJahrgangsstufe;
+
+  return { jahrgang, kuerzel: klasse.kuerzel };
+}
 
 export default async function Monitoring() {
   const data = await ladeDaten();
+  console.log("Hallo!!!!!", data);
 
   let zeilenIds: KlasseFachSchuljahrId[] = data.benotung.map((benotung) => ({
     klasseId: benotung.klasseId,
@@ -28,13 +64,17 @@ export default async function Monitoring() {
   }));
 
   //Filter für angezeigte rows
-  const selectedKlassen: KlasseId[] = ["2013-14-5b"];
+  const selectedKlassen: KlasseId[] = [];
 
   zeilenIds = filterRowsByKlasseID(selectedKlassen, zeilenIds);
 
   const selectedFaecher: FachId[] = ["D"];
 
   zeilenIds = filterRowsByFachId(selectedFaecher, zeilenIds);
+
+  const selectedSchuljahre: SchuljahrId[] = ["2018-19"];
+
+  zeilenIds = filterRowsBySchuljahrId(selectedSchuljahre, zeilenIds);
 
   zeilenIds = entferneDuplikate(zeilenIds, klasseFachSchuljahrSindGleich);
 
@@ -45,21 +85,19 @@ export default async function Monitoring() {
     .map((zeile, index) => {
       const uniqueRowIds = `${zeile.schuljahrId}-${zeile.klasseId}-${zeile.fachId}`;
       const zeilennr = index + 1;
+
+      //passende Klasse heraussuchen
       const klasse = data.klassen.find(
         (klasse) => klasse.id === zeile.klasseId
       );
       if (!klasse) return; // TODO Fehlerbehandlung, z.B. DIV Mit Fehlermeldung
 
-      const schuljahr = data.schuljahre.find((s) => s.id === zeile.schuljahrId);
-      if (!schuljahr) return;
-
-      const eingangsschuljahr = data.schuljahre.find(
-        (s) => s.id === klasse.eingangsSchuljahr
+      const klassenkuerzel = getKlassenkuerzelFuerKlasseInSchuljahr(
+        zeile.klasseId,
+        zeile.schuljahrId,
+        data
       );
-      if (!eingangsschuljahr) return;
-
-      const differenz = schuljahr.startjahr - eingangsschuljahr.startjahr;
-
+      if (!klassenkuerzel) return; // TODO Fehlerbehandlung, z.B. DIV Mit Fehlermeldung
       //Noten + Lehrer für diese Klasse, Fach und Schuljahr finden und ausgeben
       const notenProKlasseFachSchuljahr = findNotenFuerKlasseFachSchuljahr(
         data.benotung,
@@ -72,7 +110,7 @@ export default async function Monitoring() {
           zeile={zeile}
           zeilennr={zeilennr}
           klasse={klasse}
-          jahrgang={differenz + klasse.eingangsJahrgangsstufe}
+          jahrgang={klassenkuerzel.jahrgang}
           benotung={notenProKlasseFachSchuljahr}
         />
       );
