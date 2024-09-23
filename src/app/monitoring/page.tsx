@@ -15,47 +15,16 @@ import {
   entferneDuplikate,
   filterRowsByFachId,
   filterRowsByKlasseID,
+  filterRowsByKlassenkuerzel,
   filterRowsBySchuljahrId,
   findNotenFuerKlasseFachSchuljahr,
+  getKlassenkuerzelFuerKlasseInSchuljahr,
+  Klassenkuerzel,
 } from "@/utils/utils";
 import TableRow from "@/components/TableRow/TableRow";
-import { get } from "http";
-
-type Klassenkuerzel = {
-  jahrgang: number;
-  kuerzel: string;
-};
-
-function getKlassenkuerzelFuerKlasseInSchuljahr(
-  klasseId: KlasseId,
-  schuljahrId: SchuljahrId,
-  data: Data
-): Klassenkuerzel | null {
-  //passende Klasse heraussuchen
-  const klasse = data.klassen.find((klasse) => klasse.id === klasseId);
-  if (!klasse) return null;
-
-  //passendes Schuljahr heraussuchen
-  const schuljahr = data.schuljahre.find((s) => s.id === schuljahrId);
-  if (!schuljahr) return null;
-
-  //Eingangsschuljahr der Klasse heraussuchen
-  const eingangsschuljahr = data.schuljahre.find(
-    (s) => s.id === klasse.eingangsSchuljahr
-  );
-  if (!eingangsschuljahr) return null;
-
-  //DIfferenz zwischen aktuellem Schuljahr und Eingangsschuljahr berechnen
-  const differenz = schuljahr.startjahr - eingangsschuljahr.startjahr;
-
-  const jahrgang = differenz + klasse.eingangsJahrgangsstufe;
-
-  return { jahrgang, kuerzel: klasse.kuerzel };
-}
 
 export default async function Monitoring() {
   const data = await ladeDaten();
-  console.log("Hallo!!!!!", data);
 
   let zeilenIds: KlasseFachSchuljahrId[] = data.benotung.map((benotung) => ({
     klasseId: benotung.klasseId,
@@ -68,13 +37,17 @@ export default async function Monitoring() {
 
   zeilenIds = filterRowsByKlasseID(selectedKlassen, zeilenIds);
 
-  const selectedFaecher: FachId[] = ["D"];
+  const selectedFaecher: FachId[] = [];
 
   zeilenIds = filterRowsByFachId(selectedFaecher, zeilenIds);
 
-  const selectedSchuljahre: SchuljahrId[] = ["2018-19"];
+  const selectedSchuljahre: SchuljahrId[] = [];
 
   zeilenIds = filterRowsBySchuljahrId(selectedSchuljahre, zeilenIds);
+
+  const selectedKuerzel: Klassenkuerzel[] = [{ jahrgang: 7, kuerzel: "a" }];
+
+  zeilenIds = filterRowsByKlassenkuerzel(selectedKuerzel, zeilenIds, data);
 
   zeilenIds = entferneDuplikate(zeilenIds, klasseFachSchuljahrSindGleich);
 

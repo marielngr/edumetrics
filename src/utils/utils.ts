@@ -1,3 +1,4 @@
+import { Data } from "@/data";
 import {
   Benotung,
   FachId,
@@ -79,15 +80,54 @@ export function filterRowsBySchuljahrId(
   return filteredRows;
 }
 
-export function filterRowsByKlasse(
-  selectedKlassen: Klasse[],
-  rows: KlasseFachSchuljahrId[]
+export type Klassenkuerzel = {
+  jahrgang: number;
+  kuerzel: string;
+};
+export function getKlassenkuerzelFuerKlasseInSchuljahr(
+  klasseId: KlasseId,
+  schuljahrId: SchuljahrId,
+  data: Data
+): Klassenkuerzel | null {
+  //passende Klasse heraussuchen
+  const klasse = data.klassen.find((klasse) => klasse.id === klasseId);
+  if (!klasse) return null;
+
+  //passendes Schuljahr heraussuchen
+  const schuljahr = data.schuljahre.find((s) => s.id === schuljahrId);
+  if (!schuljahr) return null;
+
+  //Eingangsschuljahr der Klasse heraussuchen
+  const eingangsschuljahr = data.schuljahre.find(
+    (s) => s.id === klasse.eingangsSchuljahr
+  );
+  if (!eingangsschuljahr) return null;
+
+  //DIfferenz zwischen aktuellem Schuljahr und Eingangsschuljahr berechnen
+  const differenz = schuljahr.startjahr - eingangsschuljahr.startjahr;
+
+  const jahrgang = differenz + klasse.eingangsJahrgangsstufe;
+
+  return { jahrgang, kuerzel: klasse.kuerzel };
+}
+
+export function filterRowsByKlassenkuerzel(
+  selectedKlassen: Klassenkuerzel[],
+  rows: KlasseFachSchuljahrId[],
+  data: Data
 ) {
   const filteredRows = rows.filter((row) => {
     if (selectedKlassen.length === 0) return true;
-    const klasse = row.klasse;
+    const kuerzel = getKlassenkuerzelFuerKlasseInSchuljahr(
+      row.klasseId,
+      row.schuljahrId,
+      data
+    );
+    if (!kuerzel) return false;
 
-    return selectedKlassen.includes(jahrgang);
+    return selectedKlassen.some(
+      (k) => k.jahrgang === kuerzel.jahrgang && k.kuerzel === kuerzel.kuerzel
+    );
   });
 
   return filteredRows;
