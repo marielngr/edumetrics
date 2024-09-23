@@ -1,4 +1,11 @@
-import { Benotung, FachId, KlasseFachSchuljahrId, KlasseId } from "@/model";
+import {
+  Benotung,
+  FachId,
+  Klasse,
+  KlasseFachSchuljahrId,
+  KlasseId,
+  SchuljahrId,
+} from "@/model";
 
 export function findNotenFuerKlasseFachSchuljahr(
   notenArray: Benotung[],
@@ -53,6 +60,34 @@ export function filterRowsByFachId(
     const fach = row.fachId;
 
     return selectedFachIds.includes(fach);
+  });
+
+  return filteredRows;
+}
+
+export function filterRowsBySchuljahrId(
+  selectedSchuljahrIds: SchuljahrId[],
+  rows: KlasseFachSchuljahrId[]
+) {
+  const filteredRows = rows.filter((row) => {
+    if (selectedSchuljahrIds.length === 0) return true;
+    const schuljahr = row.schuljahrId;
+
+    return selectedSchuljahrIds.includes(schuljahr);
+  });
+
+  return filteredRows;
+}
+
+export function filterRowsByKlasse(
+  selectedKlassen: Klasse[],
+  rows: KlasseFachSchuljahrId[]
+) {
+  const filteredRows = rows.filter((row) => {
+    if (selectedKlassen.length === 0) return true;
+    const klasse = row.klasse;
+
+    return selectedKlassen.includes(jahrgang);
   });
 
   return filteredRows;
