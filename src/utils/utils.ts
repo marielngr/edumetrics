@@ -2,7 +2,6 @@ import { Data } from "@/data";
 import {
   Benotung,
   FachId,
-  Klasse,
   KlasseFachSchuljahrId,
   KlasseId,
   SchuljahrId,
@@ -111,23 +110,24 @@ export function getKlassenkuerzelFuerKlasseInSchuljahr(
   return { jahrgang, kuerzel: klasse.kuerzel };
 }
 
-export function filterRowsByKlassenkuerzel(
-  selectedKlassen: Klassenkuerzel[],
+export type Jahrgang = number;
+
+export function filterRowsByJahrgang(
+  selectedJahrgaenge: Jahrgang[],
   rows: KlasseFachSchuljahrId[],
   data: Data
 ) {
   const filteredRows = rows.filter((row) => {
-    if (selectedKlassen.length === 0) return true;
+    if (selectedJahrgaenge.length === 0) return true;
     const kuerzel = getKlassenkuerzelFuerKlasseInSchuljahr(
       row.klasseId,
       row.schuljahrId,
       data
     );
+
     if (!kuerzel) return false;
 
-    return selectedKlassen.some(
-      (k) => k.jahrgang === kuerzel.jahrgang && k.kuerzel === kuerzel.kuerzel
-    );
+    return selectedJahrgaenge.includes(kuerzel.jahrgang);
   });
 
   return filteredRows;
