@@ -1,0 +1,75 @@
+.container {
+  display: flex;
+  flex-direction: row;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+  }
+}
+
+.sidebarLeft {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 10vw;
+  background-color: #a2c0b8;
+  border-right: 4px solid #b96f15;
+
+  &__content {
+    border: 3px solid green;
+    background-color: lightblue;
+    margin: 1rem;
+  }
+}
+
+.tablesheet {
+  display: flex;
+  flex-wrap: nowrap;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: rgb(226, 237, 237);
+  padding-left: 1rem;
+
+  &__headline {
+    color: rgb(255, 183, 0);
+    padding-bottom: 0.5rem;
+  }
+
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    margin: 20px;
+  }
+}
+
+.tableRow {
+  display: flex;
+  flex-direction: row;
+  padding: 0.25rem 0;
+  gap: 1rem;
+}
+.tableRow:nth-child(odd) {
+  background-color: #ccc6c6; /* Hellgrau für ungerade Zeilen */
+}
+.tableRow:nth-child(even) {
+  background-color: #fbf5f5; /* Hellgrau für ungerade Zeilen */
+}
+
+.tableCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(58, 57, 58);
+  background-color: rgba(122, 118, 121, 0.346);
+  width: 9rem;
+  height: 3rem;
+  font-weight: bolder;
+  border-radius: 10px;
+}

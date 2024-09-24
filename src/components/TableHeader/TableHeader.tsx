@@ -1,5 +1,5 @@
 import styles from "./TableHeader.module.css";
-import { Fach, Klasse, Schuljahr } from "@/model";
+import { Fach, Klasse, KlasseId, Schuljahr } from "@/model";
 import DropDownMenu, {
   DropDownMenuEintrag,
 } from "@/components/DropDownMenu/DropDownMenu";
@@ -9,6 +9,7 @@ type TableHeaderProps = {
   schuljahre: Schuljahr[];
   jahrgaenge: number[];
   faecher: Fach[];
+  filterKlassen: KlasseId[];
 };
 
 export default function TableHeader({
