@@ -14,12 +14,12 @@ import styles from "./page.module.scss";
 import {
   entferneDuplikate,
   filterRowsByFachId,
+  filterRowsByJahrgang,
   filterRowsByKlasseID,
-  filterRowsByKlassenkuerzel,
   filterRowsBySchuljahrId,
   findNotenFuerKlasseFachSchuljahr,
   getKlassenkuerzelFuerKlasseInSchuljahr,
-  Klassenkuerzel,
+  Jahrgang,
 } from "@/utils/utils";
 import TableRow from "@/components/TableRow/TableRow";
 
@@ -41,13 +41,13 @@ export default async function Monitoring() {
 
   zeilenIds = filterRowsByFachId(selectedFaecher, zeilenIds);
 
-  const selectedSchuljahre: SchuljahrId[] = [];
+  const selectedSchuljahre: SchuljahrId[] = ["2015-16"];
 
   zeilenIds = filterRowsBySchuljahrId(selectedSchuljahre, zeilenIds);
 
-  const selectedKuerzel: Klassenkuerzel[] = [{ jahrgang: 7, kuerzel: "a" }];
+  const selectedJahrgaenge: Jahrgang[] = [7];
 
-  zeilenIds = filterRowsByKlassenkuerzel(selectedKuerzel, zeilenIds, data);
+  zeilenIds = filterRowsByJahrgang(selectedJahrgaenge, zeilenIds, data);
 
   zeilenIds = entferneDuplikate(zeilenIds, klasseFachSchuljahrSindGleich);
 
