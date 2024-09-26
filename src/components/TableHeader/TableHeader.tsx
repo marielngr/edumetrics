@@ -9,7 +9,8 @@ type TableHeaderProps = {
   schuljahre: Schuljahr[];
   jahrgaenge: number[];
   faecher: Fach[];
-  filterKlassen: KlasseId[];
+  selectedKlassen: KlasseId[];
+  onSelectedKlassenChange?: (id: KlasseId, selected: boolean) => void;
 };
 
 export default function TableHeader({
@@ -17,11 +18,13 @@ export default function TableHeader({
   schuljahre,
   jahrgaenge,
   faecher,
+  selectedKlassen,
+  onSelectedKlassenChange,
 }: TableHeaderProps) {
   const klasseneintraege: DropDownMenuEintrag[] = klassen.map((klasse) => ({
     id: klasse.id,
     label: klasse.id,
-    selected: false,
+    selected: selectedKlassen.includes(klasse.id),
   }));
 
   const schuljahreintraege: DropDownMenuEintrag[] = schuljahre.map(
@@ -46,6 +49,12 @@ export default function TableHeader({
     selected: false,
   }));
 
+  function handleSelectedKlasse(id: string, selected: boolean) {
+    if (onSelectedKlassenChange) {
+      onSelectedKlassenChange(id, selected);
+    }
+  }
+
   return (
     <div className={styles.tableHeader}>
       <div className={styles.tableCell}>
@@ -53,7 +62,10 @@ export default function TableHeader({
       </div>
       <div className={styles.tableCell}>
         <p>Klassen-ID</p>
-        <DropDownMenu eintraege={klasseneintraege} />
+        <DropDownMenu
+          eintraege={klasseneintraege}
+          onSelectedChange={handleSelectedKlasse}
+        />
       </div>
       <div className={styles.tableCell}>
         <p>Schuljahr</p>

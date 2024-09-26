@@ -36,7 +36,11 @@ export default function MonitoringTable() {
   //Filter für angezeigte rows
 
   const [selectedKlassen, setSelectedKlassen] = useState<KlasseId[]>([]);
-  // const selectedKlassen: KlasseId[] = [];
+  const handleSelectedKlassen = (id: KlasseId, selected: boolean) => {
+    setSelectedKlassen((prev) =>
+      selected ? [...prev, id] : prev.filter((klasseId) => klasseId !== id)
+    );
+  };
 
   zeilenIds = filterRowsByKlasseID(selectedKlassen, zeilenIds);
 
@@ -44,11 +48,11 @@ export default function MonitoringTable() {
 
   zeilenIds = filterRowsByFachId(selectedFaecher, zeilenIds);
 
-  const selectedSchuljahre: SchuljahrId[] = ["2015-16"];
+  const selectedSchuljahre: SchuljahrId[] = [];
 
   zeilenIds = filterRowsBySchuljahrId(selectedSchuljahre, zeilenIds);
 
-  const selectedJahrgaenge: Jahrgang[] = [7];
+  const selectedJahrgaenge: Jahrgang[] = [];
 
   zeilenIds = filterRowsByJahrgang(selectedJahrgaenge, zeilenIds, data);
 
@@ -110,7 +114,8 @@ export default function MonitoringTable() {
               schuljahre={data.schuljahre}
               jahrgaenge={jahrgaenge}
               faecher={data.faecher}
-              filterKlassen={selectedKlassen}
+              selectedKlassen={selectedKlassen}
+              onSelectedKlassenChange={handleSelectedKlassen}
             />
             <div>{rows}</div>
           </div>
