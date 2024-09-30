@@ -44,7 +44,14 @@ export default function MonitoringTable() {
 
   zeilenIds = filterRowsByKlasseID(selectedKlassen, zeilenIds);
 
-  const selectedFaecher: FachId[] = [];
+  const [selectedFaecher, setSelectedFaecher] = useState<FachId[]>([]);
+  const handleSelectedFaecher = (id: FachId, selected: boolean) => {
+    console.log("selectedFaecher", selectedFaecher);
+    setSelectedFaecher((prev) =>
+      selected ? [...prev, id] : prev.filter((fachId) => fachId !== id)
+    );
+  };
+  //   const selectedFaecher: FachId[] = [];
 
   zeilenIds = filterRowsByFachId(selectedFaecher, zeilenIds);
 
@@ -116,6 +123,8 @@ export default function MonitoringTable() {
               faecher={data.faecher}
               selectedKlassen={selectedKlassen}
               onSelectedKlassenChange={handleSelectedKlassen}
+              selectedFaecher={selectedFaecher}
+              onSelectedFaecherChange={handleSelectedFaecher}
             />
             <div>{rows}</div>
           </div>

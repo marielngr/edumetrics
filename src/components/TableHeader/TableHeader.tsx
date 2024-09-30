@@ -1,5 +1,5 @@
 import styles from "./TableHeader.module.css";
-import { Fach, Klasse, KlasseId, Schuljahr } from "@/model";
+import { Fach, Klasse, KlasseId, Schuljahr, FachId } from "@/model";
 import DropDownMenu, {
   DropDownMenuEintrag,
 } from "@/components/DropDownMenu/DropDownMenu";
@@ -11,6 +11,8 @@ type TableHeaderProps = {
   faecher: Fach[];
   selectedKlassen: KlasseId[];
   onSelectedKlassenChange?: (id: KlasseId, selected: boolean) => void;
+  selectedFaecher: FachId[];
+  onSelectedFaecherChange?: (id: FachId, selected: boolean) => void;
 };
 
 export default function TableHeader({
@@ -20,6 +22,8 @@ export default function TableHeader({
   faecher,
   selectedKlassen,
   onSelectedKlassenChange,
+  selectedFaecher,
+  onSelectedFaecherChange,
 }: TableHeaderProps) {
   const klasseneintraege: DropDownMenuEintrag[] = klassen.map((klasse) => ({
     id: klasse.id,
@@ -55,6 +59,12 @@ export default function TableHeader({
     }
   }
 
+  function handleSelectedFach(id: string, selected: boolean) {
+    if (onSelectedFaecherChange) {
+      onSelectedFaecherChange(id, selected);
+    }
+  }
+
   return (
     <div className={styles.tableHeader}>
       <div className={styles.tableCell}>
@@ -77,7 +87,10 @@ export default function TableHeader({
       </div>
       <div className={styles.tableCell}>
         <p>Fach</p>
-        <DropDownMenu eintraege={facheintraege} />
+        <DropDownMenu
+          eintraege={facheintraege}
+          onSelectedChange={handleSelectedFach}
+        />
       </div>
       <div className={styles.tableCell}>
         <p>KA 1.1</p>
