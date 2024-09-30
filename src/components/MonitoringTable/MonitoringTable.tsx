@@ -57,17 +57,24 @@ export default function MonitoringTable() {
 
   zeilenIds = filterRowsBySchuljahrId(selectedSchuljahre, zeilenIds);
 
+  const [selectedJahrgaenge, setSelectedJahrgaenge] = useState<Jahrgang[]>([]);
+  const handleSelectedJahrgaenge = (jahrgang: Jahrgang, selected: boolean) => {
+    setSelectedJahrgaenge((prev) =>
+      selected
+        ? [...prev, jahrgang]
+        : prev.filter((jahrgang) => jahrgang !== jahrgang)
+    );
+  };
+
   const [selectedFaecher, setSelectedFaecher] = useState<FachId[]>([]);
   const handleSelectedFaecher = (id: FachId, selected: boolean) => {
-    console.log("selectedFaecher", selectedFaecher);
+    // console.log("selectedFaecher", selectedFaecher); hier stimmt noch was nicht
     setSelectedFaecher((prev) =>
       selected ? [...prev, id] : prev.filter((fachId) => fachId !== id)
     );
   };
 
   zeilenIds = filterRowsByFachId(selectedFaecher, zeilenIds);
-
-  const selectedJahrgaenge: Jahrgang[] = [];
 
   zeilenIds = filterRowsByJahrgang(selectedJahrgaenge, zeilenIds, data);
 
@@ -134,7 +141,9 @@ export default function MonitoringTable() {
               selectedFaecher={selectedFaecher}
               onSelectedFaecherChange={handleSelectedFaecher}
               selectedSchuljahre={selectedSchuljahre}
-              onSelectedSchuljahrChange={handleSelectedSchuljahre}
+              onSelectedSchuljahreChange={handleSelectedSchuljahre}
+              selectedJahrgaenge={selectedJahrgaenge}
+              onSelectedJahrgaengeChange={handleSelectedJahrgaenge}
             />
             <div>{rows}</div>
           </div>
