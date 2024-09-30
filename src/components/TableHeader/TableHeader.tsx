@@ -1,5 +1,12 @@
 import styles from "./TableHeader.module.css";
-import { Fach, Klasse, KlasseId, Schuljahr, FachId } from "@/model";
+import {
+  Fach,
+  Klasse,
+  KlasseId,
+  Schuljahr,
+  FachId,
+  SchuljahrId,
+} from "@/model";
 import DropDownMenu, {
   DropDownMenuEintrag,
 } from "@/components/DropDownMenu/DropDownMenu";
@@ -13,6 +20,8 @@ type TableHeaderProps = {
   onSelectedKlassenChange?: (id: KlasseId, selected: boolean) => void;
   selectedFaecher: FachId[];
   onSelectedFaecherChange?: (id: FachId, selected: boolean) => void;
+  selectedSchuljahre: SchuljahrId[];
+  onSelectedSchuljahrChange?: (id: SchuljahrId, selected: boolean) => void;
 };
 
 export default function TableHeader({
@@ -24,6 +33,8 @@ export default function TableHeader({
   onSelectedKlassenChange,
   selectedFaecher,
   onSelectedFaecherChange,
+  selectedSchuljahre,
+  onSelectedSchuljahrChange,
 }: TableHeaderProps) {
   const klasseneintraege: DropDownMenuEintrag[] = klassen.map((klasse) => ({
     id: klasse.id,
@@ -35,7 +46,7 @@ export default function TableHeader({
     (schuljahr) => ({
       id: schuljahr.id,
       label: schuljahr.id,
-      selected: false,
+      selected: selectedSchuljahre.includes(schuljahr.id),
     })
   );
 
@@ -50,7 +61,7 @@ export default function TableHeader({
   const facheintraege: DropDownMenuEintrag[] = faecher.map((fach) => ({
     id: fach.id,
     label: fach.id,
-    selected: false,
+    selected: selectedFaecher.includes(fach.id),
   }));
 
   function handleSelectedKlasse(id: string, selected: boolean) {
@@ -62,6 +73,12 @@ export default function TableHeader({
   function handleSelectedFach(id: string, selected: boolean) {
     if (onSelectedFaecherChange) {
       onSelectedFaecherChange(id, selected);
+    }
+  }
+
+  function handleSelectedSchuljahr(id: string, selected: boolean) {
+    if (onSelectedSchuljahrChange) {
+      onSelectedSchuljahrChange(id, selected);
     }
   }
 
@@ -79,7 +96,10 @@ export default function TableHeader({
       </div>
       <div className={styles.tableCell}>
         <p>Schuljahr</p>
-        <DropDownMenu eintraege={schuljahreintraege} />
+        <DropDownMenu
+          eintraege={schuljahreintraege}
+          onSelectedChange={handleSelectedSchuljahr}
+        />
       </div>
       <div className={styles.tableCell}>
         <p>Klasse</p>
