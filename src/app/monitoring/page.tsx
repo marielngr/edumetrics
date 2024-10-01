@@ -1,62 +1,94 @@
-import { entferneDuplikate, ladeDaten } from "@/data";
+import { Data, ladeDaten } from "@/data";
 import {
-  Benotung,
-  KlasseFachSchuljahrId,
+  // Benotung,
+  // KlasseFachSchuljahrId,
   klasseFachSchuljahrSindGleich,
   klasseFachSchuljahrCompare,
+  KlasseFachSchuljahrId,
+  KlasseId,
+  FachId,
+  SchuljahrId,
 } from "@/model";
 import TableHeader from "@/components/TableHeader/TableHeader";
 import styles from "./page.module.scss";
-import { findNotenFuerKlasseFachSchuljahr } from "@/utils/utils";
+import {
+  entferneDuplikate,
+  filterRowsByFachId,
+  filterRowsByJahrgang,
+  filterRowsByKlasseID,
+  filterRowsBySchuljahrId,
+  findNotenFuerKlasseFachSchuljahr,
+  getKlassenkuerzelFuerKlasseInSchuljahr,
+  Jahrgang,
+} from "@/utils/utils";
 import TableRow from "@/components/TableRow/TableRow";
 
 export default async function Monitoring() {
   const data = await ladeDaten();
 
-  let zeilenIds = data.benotung.map((benotung) => ({
+  let zeilenIds: KlasseFachSchuljahrId[] = data.benotung.map((benotung) => ({
     klasseId: benotung.klasseId,
     fachId: benotung.fachId,
     schuljahrId: benotung.schuljahrId,
   }));
+
+  //Filter für angezeigte rows
+  const selectedKlassen: KlasseId[] = [];
+
+  zeilenIds = filterRowsByKlasseID(selectedKlassen, zeilenIds);
+
+  const selectedFaecher: FachId[] = [];
+
+  zeilenIds = filterRowsByFachId(selectedFaecher, zeilenIds);
+
+  const selectedSchuljahre: SchuljahrId[] = ["2015-16"];
+
+  zeilenIds = filterRowsBySchuljahrId(selectedSchuljahre, zeilenIds);
+
+  const selectedJahrgaenge: Jahrgang[] = [7];
+
+  zeilenIds = filterRowsByJahrgang(selectedJahrgaenge, zeilenIds, data);
 
   zeilenIds = entferneDuplikate(zeilenIds, klasseFachSchuljahrSindGleich);
 
   //für die Darstellung sortieren - zuerst nach Schuljahr, dann nach Klasse, dann nach Fach
   zeilenIds = zeilenIds.sort(klasseFachSchuljahrCompare);
 
-  const rows = zeilenIds.map((zeile, index) => {
-    const uniqueRowIds = `${zeile.schuljahrId}-${zeile.klasseId}-${zeile.fachId}`;
-    const zeilennr = index + 1;
-    const klasse = data.klassen.find((klasse) => klasse.id === zeile.klasseId);
-    if (!klasse) return; // TODO Fehlerbehandlung, z.B. DIV Mit Fehlermeldung
+  const rows = zeilenIds
+    .map((zeile, index) => {
+      const uniqueRowIds = `${zeile.schuljahrId}-${zeile.klasseId}-${zeile.fachId}`;
+      const zeilennr = index + 1;
 
-    const schuljahr = data.schuljahre.find((s) => s.id === zeile.schuljahrId);
-    if (!schuljahr) return;
+      //passende Klasse heraussuchen
+      const klasse = data.klassen.find(
+        (klasse) => klasse.id === zeile.klasseId
+      );
+      if (!klasse) return; // TODO Fehlerbehandlung, z.B. DIV Mit Fehlermeldung
 
-    const eingangsschuljahr = data.schuljahre.find(
-      (s) => s.id === klasse.eingangsSchuljahr
-    );
-    if (!eingangsschuljahr) return;
+      const klassenkuerzel = getKlassenkuerzelFuerKlasseInSchuljahr(
+        zeile.klasseId,
+        zeile.schuljahrId,
+        data
+      );
+      if (!klassenkuerzel) return; // TODO Fehlerbehandlung, z.B. DIV Mit Fehlermeldung
+      //Noten + Lehrer für diese Klasse, Fach und Schuljahr finden und ausgeben
+      const notenProKlasseFachSchuljahr = findNotenFuerKlasseFachSchuljahr(
+        data.benotung,
+        zeile
+      );
 
-    const differenz = schuljahr.startjahr - eingangsschuljahr.startjahr;
-
-    //Noten + Lehrer für diese Klasse, Fach und Schuljahr finden und ausgeben
-    const notenProKlasseFachSchuljahr = findNotenFuerKlasseFachSchuljahr(
-      data.benotung,
-      zeile
-    );
-
-    return (
-      <TableRow
-        key={uniqueRowIds}
-        zeile={zeile}
-        zeilennr={zeilennr}
-        klasse={klasse}
-        jahrgang={differenz + klasse.eingangsJahrgangsstufe}
-        benotung={notenProKlasseFachSchuljahr}
-      />
-    );
-  });
+      return (
+        <TableRow
+          key={uniqueRowIds}
+          zeile={zeile}
+          zeilennr={zeilennr}
+          klasse={klasse}
+          jahrgang={klassenkuerzel.jahrgang}
+          benotung={notenProKlasseFachSchuljahr}
+        />
+      );
+    })
+    .filter((row) => row !== null);
 
   const jahrgaenge = [5, 6, 7, 8, 9, 10];
   const sortierteKlassen = [...data.klassen].sort();
@@ -84,6 +116,4 @@ export default async function Monitoring() {
   );
 }
 
-//refactoren in einzelne Komponenten
-//Filter-Logik --> state für Häkchen setzen in DropDownMenu
 //Lehrerdropdown in Seitenleiste
