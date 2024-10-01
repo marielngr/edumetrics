@@ -5,6 +5,7 @@ import { useState } from "react";
 
 export type DropDownMenuProps = {
   eintraege: DropDownMenuEintrag[];
+  onSelectedChange?: (id: string, selected: boolean) => void;
 };
 
 export type DropDownMenuEintrag = {
@@ -13,11 +14,20 @@ export type DropDownMenuEintrag = {
   selected: boolean;
 };
 
-export default function DropDownMenu({ eintraege }: DropDownMenuProps) {
+export default function DropDownMenu({
+  eintraege,
+  onSelectedChange,
+}: DropDownMenuProps) {
   const [showMenu, setShowMenu] = useState(false);
 
   function handleClick() {
     setShowMenu(!showMenu);
+  }
+
+  function handleOnChange(id: string, selected: boolean) {
+    if (onSelectedChange) {
+      onSelectedChange(id, selected);
+    }
   }
 
   return (
@@ -39,6 +49,9 @@ export default function DropDownMenu({ eintraege }: DropDownMenuProps) {
                   className={styles.DropDownMenu_item}
                 >
                   <input
+                    onChange={(e) =>
+                      handleOnChange(eintrag.id, e.target.checked)
+                    }
                     type="checkbox"
                     id={eintrag.id}
                     name={eintrag.id}

@@ -5,6 +5,8 @@ import {
   KlasseFachSchuljahrId,
   KlasseId,
   SchuljahrId,
+  Klassenkuerzel,
+  Jahrgang,
 } from "@/model";
 
 export function findNotenFuerKlasseFachSchuljahr(
@@ -79,10 +81,6 @@ export function filterRowsBySchuljahrId(
   return filteredRows;
 }
 
-export type Klassenkuerzel = {
-  jahrgang: number;
-  kuerzel: string;
-};
 export function getKlassenkuerzelFuerKlasseInSchuljahr(
   klasseId: KlasseId,
   schuljahrId: SchuljahrId,
@@ -109,8 +107,6 @@ export function getKlassenkuerzelFuerKlasseInSchuljahr(
 
   return { jahrgang, kuerzel: klasse.kuerzel };
 }
-
-export type Jahrgang = number;
 
 export function filterRowsByJahrgang(
   selectedJahrgaenge: Jahrgang[],
