@@ -6,6 +6,7 @@ import {
   FachId,
   SchuljahrId,
   KlasseId,
+  Jahrgang,
 } from "@/model";
 import TableHeader from "@/components/TableHeader/TableHeader";
 import styles from "./MonitoringTable.module.scss";
@@ -17,7 +18,6 @@ import {
   filterRowsBySchuljahrId,
   findNotenFuerKlasseFachSchuljahr,
   getKlassenkuerzelFuerKlasseInSchuljahr,
-  Jahrgang,
 } from "@/utils/utils";
 import TableRow from "@/components/TableRow/TableRow";
 import { use, useState } from "react";

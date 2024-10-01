@@ -6,6 +6,7 @@ export type VorgabeId = string;
 export type SchuljahrId = string;
 export type OrganisationsformId = string;
 export type BenotungId = string;
+export type Jahrgang = number;
 
 export interface Fach {
   name: string;
@@ -111,6 +112,11 @@ export type KlasseFachSchuljahrId = {
   klasseId: KlasseId;
   fachId: FachId;
   schuljahrId: SchuljahrId;
+};
+
+export type Klassenkuerzel = {
+  jahrgang: number;
+  kuerzel: string;
 };
 
 export function klasseFachSchuljahrSindGleich(
