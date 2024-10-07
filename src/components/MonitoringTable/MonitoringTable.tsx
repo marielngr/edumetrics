@@ -22,6 +22,7 @@ import {
 import TableRow from "@/components/TableRow/TableRow";
 import { use, useState } from "react";
 import { useDataContext } from "@/app/context";
+import SidebarLeft from "../SidebarLeft/SidebarLeft";
 
 export default function MonitoringTable() {
   let dataPromise = useDataContext();
@@ -125,9 +126,10 @@ export default function MonitoringTable() {
   return (
     <>
       <div className={styles.container}>
-        <section className={styles.sidebarLeft}>
+        {/* <section className={styles.sidebarLeft}>
           <div className={styles.sidebarLeft__content}>Lehrerfilter</div>
-        </section>
+        </section> */}
+        <SidebarLeft />
         <section className={styles.tablesheet}>
           <h2 className={styles.tablesheet__headline}>Überschrift whatever</h2>
           <div className={styles.tablesheet__wrapper}>
