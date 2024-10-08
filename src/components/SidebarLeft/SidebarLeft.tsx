@@ -1,7 +1,21 @@
 import styles from "./SidebarLeft.module.scss";
 import DropDownMenu from "../DropDownMenu/DropDownMenu";
+import { Lehrer, LehrerId } from "@/model";
 
-export default function SidebarLeft() {
+export type SidebarLeftProps = {
+  lehrer: Lehrer[];
+  selectedLehrer: LehrerId[];
+};
+
+export default function SidebarLeft({ lehrer }: SidebarLeftProps) {
+  //in Monitoring Lehrer filtern
+
+  //1. Darstellung: alle Lehrer in der Sidebar unterhalb des Fachfilter DropDown anzeigen -> map pro Lehrer button returnen
+  // 2. Darstellung: Lehrerbutton -> onClick -> LehrerId als Filter für Liste setzen
+  //3. onChangeSelectedLehrer hochbubblen mit State in MonitoringTable
+  //4. buttons sichtbar machen, welche ausgewählt sind -> Farbwechsel
+
+  console.log(lehrer);
   return (
     <section className={styles.sidebarLeft}>
       <label
@@ -27,8 +41,12 @@ export default function SidebarLeft() {
       </div>
 
       <div className={styles.sidebarLeft__lehrerContainer}>
-        <div className={styles.sidebarLeft__content}>Kne</div>
-        <div className={styles.sidebarLeft__content}>Fu</div>
+        {lehrer &&
+          lehrer.map((lehrer) => (
+            <button key={lehrer.id} className={styles.sidebarLeft__content}>
+              {lehrer.kuerzel}
+            </button>
+          ))}
       </div>
     </section>
   );

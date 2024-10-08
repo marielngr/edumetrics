@@ -69,7 +69,7 @@ export default function MonitoringTable() {
 
   const [selectedFaecher, setSelectedFaecher] = useState<FachId[]>([]);
   const handleSelectedFaecher = (id: FachId, selected: boolean) => {
-    // console.log("selectedFaecher", selectedFaecher); hier stimmt noch was nicht
+    // console.log("selectedFaecher", selectedFaecher); hier stimmt noch was nicht mit dem console.log überein
     setSelectedFaecher((prev) =>
       selected ? [...prev, id] : prev.filter((fachId) => fachId !== id)
     );
@@ -101,6 +101,7 @@ export default function MonitoringTable() {
         data
       );
       if (!klassenkuerzel) return; // TODO Fehlerbehandlung, z.B. DIV Mit Fehlermeldung
+
       //Noten + Lehrer für diese Klasse, Fach und Schuljahr finden und ausgeben
       const notenProKlasseFachSchuljahr = findNotenFuerKlasseFachSchuljahr(
         data.benotung,
@@ -126,10 +127,7 @@ export default function MonitoringTable() {
   return (
     <>
       <div className={styles.container}>
-        {/* <section className={styles.sidebarLeft}>
-          <div className={styles.sidebarLeft__content}>Lehrerfilter</div>
-        </section> */}
-        <SidebarLeft />
+        <SidebarLeft lehrer={data.lehrer} selectedLehrer={[]} />
         <section className={styles.tablesheet}>
           <h2 className={styles.tablesheet__headline}>Überschrift whatever</h2>
           <div className={styles.tablesheet__wrapper}>
