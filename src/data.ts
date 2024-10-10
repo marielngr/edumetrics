@@ -6,7 +6,9 @@ async function ladeCsvDaten(filePath: string): Promise<string[][]> {
     const response = await fetch(filePath);
     const fileContent = await response.text();
     const lines = fileContent.split("\n");
-    const result = lines.map((line) => line.split(";"));
+    const result = lines.map((line) =>
+      line.split(";").map((value) => fixCsvValue(value))
+    );
     return result;
   } catch (error) {
     console.error("Fehler beim Einlesen der CSV-Datei:", error);
@@ -14,6 +16,12 @@ async function ladeCsvDaten(filePath: string): Promise<string[][]> {
   }
 }
 
+function fixCsvValue(value: string): string {
+  if (value.startsWith('"')) {
+    value = value.slice(1, -1);
+  }
+  return value;
+}
 export interface Data {
   schuljahre: Schuljahr[];
   klassen: Klasse[];
@@ -157,7 +165,7 @@ export async function ladeDaten(): Promise<Data> {
         notenspalte: number,
         fallbackSpalte?: number
       ): Benotung | null {
-        const lehrer =
+        let lehrer =
           // zuerst Lehrer aus der primären Spalte für dieses Halbjahr nehmen
           zeile[lehrerspalte[0]] ||
           // falls in der primären Spalte kein Lehrer steht, aber noch eine zweite Lehrerspalte
@@ -167,17 +175,8 @@ export async function ladeDaten(): Promise<Data> {
           //console.log("Kein Lehrer:", zeile);
           return null;
         }
-        let lehrerIds = lehrer.split("/");
 
-        if (lehrerIds.filter((l) => l === "2,3").length > 0) {
-          console.log(
-            "Fehlerhafter Lehrer:",
-            zeile,
-            lehrerIds,
-            lehrer,
-            lehrerspalte
-          );
-        }
+        let lehrerIds = lehrer.split("/");
 
         const noteAlsString =
           zeile[notenspalte] || (fallbackSpalte && zeile[fallbackSpalte]);
