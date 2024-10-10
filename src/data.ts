@@ -169,12 +169,26 @@ export async function ladeDaten(): Promise<Data> {
         }
         let lehrerIds = lehrer.split("/");
 
+        if (lehrerIds.filter((l) => l === "2,3").length > 0) {
+          console.log(
+            "Fehlerhafter Lehrer:",
+            zeile,
+            lehrerIds,
+            lehrer,
+            lehrerspalte
+          );
+        }
+
         const noteAlsString =
           zeile[notenspalte] || (fallbackSpalte && zeile[fallbackSpalte]);
         if (!noteAlsString) {
           return null;
         }
         let note = parseFloat(noteAlsString.replace(",", "."));
+
+        if (isNaN(note)) {
+          return null;
+        }
 
         return {
           id: generiereZufaelligeId(),
