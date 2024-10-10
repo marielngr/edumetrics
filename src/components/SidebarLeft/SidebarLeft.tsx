@@ -10,9 +10,11 @@ export type SidebarLeftProps = {
 export default function SidebarLeft({ lehrer }: SidebarLeftProps) {
   //in Monitoring Lehrer filtern
 
-  //1. Darstellung: alle Lehrer in der Sidebar unterhalb des Fachfilter DropDown anzeigen
-  // ggfls Filter einbauen -> keine numerischen Werte und keine Fächer anzeigen
-  // -> Lehrerbuttons alphabetisch sortiert anzeigen
+  // Lehrer alphabetisch sortieren
+  const lehrerSortiert = lehrer.sort((a, b) =>
+    a.kuerzel.localeCompare(b.kuerzel, "de", { sensitivity: "base" })
+  );
+
   // 2. Darstellung: Lehrerbutton -> onClick -> LehrerId als Filter für Liste setzen
   //3. onChangeSelectedLehrer hochbubblen mit State in MonitoringTable
   //4. buttons sichtbar machen, welche ausgewählt sind -> Farbwechsel
@@ -43,16 +45,11 @@ export default function SidebarLeft({ lehrer }: SidebarLeftProps) {
 
       <div className={styles.sidebarLeft__lehrerContainer}>
         {lehrer &&
-          lehrer.map(
-            (lehrer) => (
-              console.log(lehrer),
-              (
-                <button key={lehrer.id} className={styles.sidebarLeft__content}>
-                  {lehrer.kuerzel}
-                </button>
-              )
-            )
-          )}
+          lehrerSortiert.map((lehrer) => (
+            <button key={lehrer.id} className={styles.sidebarLeft__content}>
+              {lehrer.kuerzel}
+            </button>
+          ))}
       </div>
     </section>
   );
