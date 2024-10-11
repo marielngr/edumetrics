@@ -19,6 +19,9 @@
   &__content--selected {
     background-color: orange;
   }
+  &__content:hover {
+    background-color: rgb(120, 138, 128);
+  }
 }
 
 .sidebarLeft__labelSearchBar {
