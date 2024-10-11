@@ -39,6 +39,23 @@ export function findNotenFuerKlasseFachSchuljahr(
 /**diese Funktionen filtern den Datensatz nach übergebenen Filterkriterien
  * und geben ein neues Array mit neuen Ergebnissen zurück*/
 
+export function filterRowsByLehrerId(
+  selectedLehrerIds: string[],
+  rows: KlasseFachSchuljahrId[],
+  data: Data
+) {
+  const filteredRows = rows.filter((row) => {
+    if (selectedLehrerIds.length === 0) return true;
+    const noten = findNotenFuerKlasseFachSchuljahr(data.benotung, row);
+
+    const lehrerIds = noten.map((note) => note.lehrerId);
+
+    return lehrerIds.some((lehrerId) => selectedLehrerIds.includes(lehrerId));
+  });
+
+  return filteredRows;
+}
+
 export function filterRowsByKlasseID(
   selectedKlasseIds: KlasseId[],
   rows: KlasseFachSchuljahrId[]

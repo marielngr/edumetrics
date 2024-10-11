@@ -16,6 +16,7 @@ import {
   filterRowsByFachId,
   filterRowsByJahrgang,
   filterRowsByKlasseID,
+  filterRowsByLehrerId,
   filterRowsBySchuljahrId,
   findNotenFuerKlasseFachSchuljahr,
   getKlassenkuerzelFuerKlasseInSchuljahr,
@@ -45,6 +46,8 @@ export default function MonitoringTable() {
     );
     console.log("selectedLehrer", selectedLehrer);
   }
+
+  zeilenIds = filterRowsByLehrerId(selectedLehrer, zeilenIds, data);
 
   //Filter für angezeigte rows
 
@@ -141,7 +144,6 @@ export default function MonitoringTable() {
       <div className={styles.container}>
         <SidebarLeft
           lehrer={data.lehrer}
-          selectedLehrer={selectedLehrer}
           onChangeSelectedLehrer={handleChangeSelectedLehrer}
         />
         <section className={styles.tablesheet}>

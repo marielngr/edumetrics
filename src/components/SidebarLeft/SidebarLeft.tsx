@@ -4,13 +4,11 @@ import { Lehrer, LehrerId } from "@/model";
 
 export type SidebarLeftProps = {
   lehrer: Lehrer[];
-  selectedLehrer: LehrerId[];
   onChangeSelectedLehrer: (id: LehrerId) => void;
 };
 
 export default function SidebarLeft({
   lehrer,
-  selectedLehrer,
   onChangeSelectedLehrer,
 }: SidebarLeftProps) {
   // Lehrer alphabetisch sortieren
