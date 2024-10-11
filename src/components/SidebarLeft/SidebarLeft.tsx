@@ -5,18 +5,23 @@ import { Lehrer, LehrerId } from "@/model";
 export type SidebarLeftProps = {
   lehrer: Lehrer[];
   selectedLehrer: LehrerId[];
+  onChangeSelectedLehrer: (id: LehrerId) => void;
 };
 
-export default function SidebarLeft({ lehrer }: SidebarLeftProps) {
-  //in Monitoring Lehrer filtern
-
+export default function SidebarLeft({
+  lehrer,
+  selectedLehrer,
+  onChangeSelectedLehrer,
+}: SidebarLeftProps) {
   // Lehrer alphabetisch sortieren
   const lehrerSortiert = lehrer.sort((a, b) =>
     a.kuerzel.localeCompare(b.kuerzel, "de", { sensitivity: "base" })
   );
 
-  // 2. Darstellung: Lehrerbutton -> onClick -> LehrerId als Filter für Liste setzen
-  //3. onChangeSelectedLehrer hochbubblen mit State in MonitoringTable
+  function handleLehrerClick(id: LehrerId) {
+    onChangeSelectedLehrer(id);
+  }
+
   //4. buttons sichtbar machen, welche ausgewählt sind -> Farbwechsel
 
   return (
@@ -46,7 +51,11 @@ export default function SidebarLeft({ lehrer }: SidebarLeftProps) {
       <div className={styles.sidebarLeft__lehrerContainer}>
         {lehrer &&
           lehrerSortiert.map((lehrer) => (
-            <button key={lehrer.id} className={styles.sidebarLeft__content}>
+            <button
+              key={lehrer.id}
+              className={styles.sidebarLeft__content}
+              onClick={() => handleLehrerClick(lehrer.id)}
+            >
               {lehrer.kuerzel}
             </button>
           ))}

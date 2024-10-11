@@ -7,6 +7,7 @@ import {
   SchuljahrId,
   KlasseId,
   Jahrgang,
+  LehrerId,
 } from "@/model";
 import TableHeader from "@/components/TableHeader/TableHeader";
 import styles from "./MonitoringTable.module.scss";
@@ -33,6 +34,17 @@ export default function MonitoringTable() {
     fachId: benotung.fachId,
     schuljahrId: benotung.schuljahrId,
   }));
+
+  //Lehrerfilter SidebarLeft
+  const [selectedLehrer, setSelectedLehrer] = useState<LehrerId[]>([]);
+  function handleChangeSelectedLehrer(id: LehrerId) {
+    setSelectedLehrer((prev) =>
+      prev.includes(id)
+        ? prev.filter((lehrerId) => lehrerId !== id)
+        : [...prev, id]
+    );
+    console.log("selectedLehrer", selectedLehrer);
+  }
 
   //Filter für angezeigte rows
 
@@ -127,7 +139,11 @@ export default function MonitoringTable() {
   return (
     <>
       <div className={styles.container}>
-        <SidebarLeft lehrer={data.lehrer} selectedLehrer={[]} />
+        <SidebarLeft
+          lehrer={data.lehrer}
+          selectedLehrer={selectedLehrer}
+          onChangeSelectedLehrer={handleChangeSelectedLehrer}
+        />
         <section className={styles.tablesheet}>
           <h2 className={styles.tablesheet__headline}>Überschrift whatever</h2>
           <div className={styles.tablesheet__wrapper}>
