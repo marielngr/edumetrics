@@ -18,11 +18,20 @@ export default function SidebarLeft({
     a.kuerzel.localeCompare(b.kuerzel, "de", { sensitivity: "base" })
   );
 
-  function handleLehrerClick(id: LehrerId) {
+  function handleLehrerClick(
+    event: React.MouseEvent<HTMLButtonElement>,
+    id: LehrerId
+  ) {
     onChangeSelectedLehrer(id);
-  }
 
-  //4. buttons sichtbar machen, welche ausgewählt sind -> Farbwechsel
+    const button = event.currentTarget;
+    // Toggle Hintergrundfarbe
+    if (button.style.backgroundColor === "orange") {
+      button.style.backgroundColor = "";
+    } else {
+      button.style.backgroundColor = "orange";
+    }
+  }
 
   return (
     <section className={styles.sidebarLeft}>
@@ -54,7 +63,7 @@ export default function SidebarLeft({
             <button
               key={lehrer.id}
               className={styles.sidebarLeft__content}
-              onClick={() => handleLehrerClick(lehrer.id)}
+              onClick={(event) => handleLehrerClick(event, lehrer.id)}
             >
               {lehrer.kuerzel}
             </button>
