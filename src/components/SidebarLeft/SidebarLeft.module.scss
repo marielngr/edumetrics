@@ -16,6 +16,9 @@
     width: 3rem;
     text-align: center;
   }
+  &__content--selected {
+    background-color: orange;
+  }
 }
 
 .sidebarLeft__labelSearchBar {

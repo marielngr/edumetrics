@@ -44,7 +44,6 @@ export default function MonitoringTable() {
         ? prev.filter((lehrerId) => lehrerId !== id)
         : [...prev, id]
     );
-    console.log("selectedLehrer", selectedLehrer);
   }
 
   zeilenIds = filterRowsByLehrerId(selectedLehrer, zeilenIds, data);
@@ -145,6 +144,7 @@ export default function MonitoringTable() {
         <SidebarLeft
           lehrer={data.lehrer}
           onChangeSelectedLehrer={handleChangeSelectedLehrer}
+          selectedLehrer={selectedLehrer}
         />
         <section className={styles.tablesheet}>
           <h2 className={styles.tablesheet__headline}>Überschrift whatever</h2>

@@ -5,30 +5,21 @@ import { Lehrer, LehrerId } from "@/model";
 export type SidebarLeftProps = {
   lehrer: Lehrer[];
   onChangeSelectedLehrer: (id: LehrerId) => void;
+  selectedLehrer: LehrerId[];
 };
 
 export default function SidebarLeft({
   lehrer,
   onChangeSelectedLehrer,
+  selectedLehrer,
 }: SidebarLeftProps) {
   // Lehrer alphabetisch sortieren
   const lehrerSortiert = lehrer.sort((a, b) =>
     a.kuerzel.localeCompare(b.kuerzel, "de", { sensitivity: "base" })
   );
 
-  function handleLehrerClick(
-    event: React.MouseEvent<HTMLButtonElement>,
-    id: LehrerId
-  ) {
+  function handleLehrerClick(id: LehrerId) {
     onChangeSelectedLehrer(id);
-
-    const button = event.currentTarget;
-    // Toggle Hintergrundfarbe
-    if (button.style.backgroundColor === "orange") {
-      button.style.backgroundColor = "";
-    } else {
-      button.style.backgroundColor = "orange";
-    }
   }
 
   return (
@@ -60,8 +51,14 @@ export default function SidebarLeft({
           lehrerSortiert.map((lehrer) => (
             <button
               key={lehrer.id}
-              className={styles.sidebarLeft__content}
-              onClick={(event) => handleLehrerClick(event, lehrer.id)}
+              className={
+                styles.sidebarLeft__content +
+                " " +
+                (selectedLehrer.includes(lehrer.id)
+                  ? styles["sidebarLeft__content--selected"]
+                  : "")
+              }
+              onClick={() => handleLehrerClick(lehrer.id)}
             >
               {lehrer.kuerzel}
             </button>
