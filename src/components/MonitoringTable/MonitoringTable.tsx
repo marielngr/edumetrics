@@ -7,6 +7,7 @@ import {
   SchuljahrId,
   KlasseId,
   Jahrgang,
+  LehrerId,
 } from "@/model";
 import TableHeader from "@/components/TableHeader/TableHeader";
 import styles from "./MonitoringTable.module.scss";
@@ -15,6 +16,7 @@ import {
   filterRowsByFachId,
   filterRowsByJahrgang,
   filterRowsByKlasseID,
+  filterRowsByLehrerId,
   filterRowsBySchuljahrId,
   findNotenFuerKlasseFachSchuljahr,
   getKlassenkuerzelFuerKlasseInSchuljahr,
@@ -22,6 +24,7 @@ import {
 import TableRow from "@/components/TableRow/TableRow";
 import { use, useState } from "react";
 import { useDataContext } from "@/app/context";
+import SidebarLeft from "../SidebarLeft/SidebarLeft";
 
 export default function MonitoringTable() {
   let dataPromise = useDataContext();
@@ -32,6 +35,18 @@ export default function MonitoringTable() {
     fachId: benotung.fachId,
     schuljahrId: benotung.schuljahrId,
   }));
+
+  //Lehrerfilter SidebarLeft
+  const [selectedLehrer, setSelectedLehrer] = useState<LehrerId[]>([]);
+  function handleChangeSelectedLehrer(id: LehrerId) {
+    setSelectedLehrer((prev) =>
+      prev.includes(id)
+        ? prev.filter((lehrerId) => lehrerId !== id)
+        : [...prev, id]
+    );
+  }
+
+  zeilenIds = filterRowsByLehrerId(selectedLehrer, zeilenIds, data);
 
   //Filter für angezeigte rows
 
@@ -68,7 +83,7 @@ export default function MonitoringTable() {
 
   const [selectedFaecher, setSelectedFaecher] = useState<FachId[]>([]);
   const handleSelectedFaecher = (id: FachId, selected: boolean) => {
-    // console.log("selectedFaecher", selectedFaecher); hier stimmt noch was nicht
+    // console.log("selectedFaecher", selectedFaecher); hier stimmt noch was nicht mit dem console.log überein
     setSelectedFaecher((prev) =>
       selected ? [...prev, id] : prev.filter((fachId) => fachId !== id)
     );
@@ -100,6 +115,7 @@ export default function MonitoringTable() {
         data
       );
       if (!klassenkuerzel) return; // TODO Fehlerbehandlung, z.B. DIV Mit Fehlermeldung
+
       //Noten + Lehrer für diese Klasse, Fach und Schuljahr finden und ausgeben
       const notenProKlasseFachSchuljahr = findNotenFuerKlasseFachSchuljahr(
         data.benotung,
@@ -125,9 +141,11 @@ export default function MonitoringTable() {
   return (
     <>
       <div className={styles.container}>
-        <section className={styles.sidebarLeft}>
-          <div className={styles.sidebarLeft__content}>Lehrerfilter</div>
-        </section>
+        <SidebarLeft
+          lehrer={data.lehrer}
+          onChangeSelectedLehrer={handleChangeSelectedLehrer}
+          selectedLehrer={selectedLehrer}
+        />
         <section className={styles.tablesheet}>
           <h2 className={styles.tablesheet__headline}>Überschrift whatever</h2>
           <div className={styles.tablesheet__wrapper}>

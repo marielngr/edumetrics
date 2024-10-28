@@ -48,7 +48,7 @@ export default function TableRow({
     [2, 2],
     [2, 3],
   ];
-
+  //To Do: Refactor als eigene Komponente
   function noteFuerPeriodeUndKlausur(
     periodenNummer: number,
     laufendeNummer: number
@@ -58,13 +58,17 @@ export default function TableRow({
         note.periodenNummer === periodenNummer &&
         note.laufendeNummer === laufendeNummer
     );
-
+    const key = `${periodenNummer}-${laufendeNummer}`;
     if (!note) {
-      return <div className={styles.tableCell}>-</div>;
+      return (
+        <div key={key} className={styles.tableCell}>
+          -
+        </div>
+      );
     }
 
     return (
-      <div className={styles.tableCell}>
+      <div key={key} className={styles.tableCell}>
         {note.periodenNummer}-{note.laufendeNummer}: Ø{note.note}/
         {note.lehrerId}
       </div>

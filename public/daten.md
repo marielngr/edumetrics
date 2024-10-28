@@ -12,3 +12,7 @@ Inkonsistente Daten:
 
 Notiz 17.9.:
 Achtung: zur Zeit werden bei Zeilen, die keine KA-Noten haben, aber dafür die Halbjahresdurchschnitte diese auch als KA-Noten angezeigt
+
+Notiz 9.10.:
+falsche Einträge in Lehrerspalten hier korrigiert, müssen im Original noch ausgebessert werden:
+u.a. 831/832 mit Fächern vertauscht und 719-801 stehen beim Lehrer fürs 2. HJ Noteneinträge
