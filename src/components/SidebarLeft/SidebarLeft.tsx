@@ -1,25 +1,45 @@
 import styles from "./SidebarLeft.module.scss";
-import DropDownMenu from "../DropDownMenu/DropDownMenu";
-import { Lehrer, LehrerId } from "@/model";
+import DropDownMenu, {
+  DropDownMenuEintrag,
+} from "../DropDownMenu/DropDownMenu";
+import { Fach, FachId, Lehrer, LehrerId } from "@/model";
 
 export type SidebarLeftProps = {
   lehrer: Lehrer[];
   onChangeSelectedLehrer: (id: LehrerId) => void;
   selectedLehrer: LehrerId[];
+  faecher: Fach[];
+  selectedFaecherLehrerfilter: FachId[];
+  onChangeSelectedFaecherLehrerfilter?: (id: FachId, selected: boolean) => void;
 };
 
 export default function SidebarLeft({
   lehrer,
   onChangeSelectedLehrer,
   selectedLehrer,
+  faecher,
+  selectedFaecherLehrerfilter,
+  onChangeSelectedFaecherLehrerfilter,
 }: SidebarLeftProps) {
-  // Lehrer alphabetisch sortieren
+  // angezeigte Lehrer alphabetisch sortieren
   const lehrerSortiert = lehrer.sort((a, b) =>
     a.kuerzel.localeCompare(b.kuerzel, "de", { sensitivity: "base" })
   );
 
   function handleLehrerClick(id: LehrerId) {
     onChangeSelectedLehrer(id);
+  }
+
+  const faechereintraege: DropDownMenuEintrag[] = faecher.map((fach) => ({
+    id: fach.id,
+    label: fach.id,
+    selected: selectedFaecherLehrerfilter.includes(fach.id),
+  }));
+
+  function handleSelectedFaecherLehrerfilter(id: FachId, selected: boolean) {
+    if (onChangeSelectedFaecherLehrerfilter) {
+      onChangeSelectedFaecherLehrerfilter(id, selected);
+    }
   }
 
   return (
@@ -39,10 +59,8 @@ export default function SidebarLeft({
       <div className={styles.sidebarLeft__filterContainer}>
         <p className={styles.sidebarLeft__filterContainerText}>Fachfilter</p>
         <DropDownMenu
-          eintraege={[
-            { id: "M", label: "M", selected: false },
-            { id: "D", label: "D", selected: false },
-          ]}
+          eintraege={faechereintraege}
+          onSelectedChange={handleSelectedFaecherLehrerfilter}
         ></DropDownMenu>
       </div>
 
