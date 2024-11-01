@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Edumetrics - Bewertung von Unterrichtsqualität
 
-## Getting Started
+Edumetrics bietet eine umfassende Lösung zur schulinternen Auswertung und Verbesserung der Unterrichtsqualität in der Sekundarstufe I. Es ermöglicht Lehrern und Schuladministratoren, Daten zu sammeln und zu analysieren, um dann möglicherweise Maßnahmen zur Verbesserung des Unterrichts zu ergreifen.
 
-First, run the development server:
+**Achtung:** Dieses Projekt befindet sich derzeit noch in der Entwicklung.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Anwendungsfälle
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Longitudinale Nachverfolgung**: Die Beobachtung einer bestimmten Klasse, Lerngruppe oder eines ganzen Jahrgangs über mehrere Zeitpunkte hinweg. Ziel ist es, Entwicklungen oder Veränderungen im Zeitverlauf festzustellen, etwa in Bezug auf Unterrichtsqualität oder Lernergebnisse.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Querschnittsvergleich von Fächern und Jahrgangsanalysen**: Die parallele Betrachtung von Fächern innerhalb eines Jahrgangs oder im Gesamtschulvergleich (**Querschnittsanalyse**), um die Unterrichtsqualität eines Faches oder einer Fachgruppe zum selben Zeitpunkt in verschiedenen Klassen oder Jahrgängen zu untersuchen.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- **Pre-Post-Analyse**: Analyse und Überwachung der Unterrichtsqualität etwa nach einem Wechsel der Lehrperson, um systematische Veränderungen aufzudecken.
 
-## Learn More
+- **Vergleich von Lehrer-Kohorten (Kohortenanalyse)**: Identifizierung systematischer Unterschiede zwischen verschiedenen Lehrergruppen (Kohorten), ohne dabei personenbezogene Daten zu betrachten (um den Anforderungen des Personalrats gerecht zu werden). Kohorten können
+  Lehrkräfte sein, die etwa dieselbe Lehrerausbildung absolviert haben oder seit einem ähnlichen Zeitraum unterrichten.
 
-To learn more about Next.js, take a look at the following resources:
+Die Kombination von Longitudinalstudien, Querschnittsanalysen und Pre-Post-Designs unterstützt eine differenzierte Überwachung und Bewertung der Unterrichtsqualität, indem sie Zeitverläufe, Fachunterschiede und Effekte von Lehrkräften berücksichtigt.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Aus Datenschutzgründen ist eine reine Client-Browser-Anwendung geplant, d.h. die Daten sollten nie den lokalen Rechner (Browser) verlassen. Stattdessen sollen Daten "geöffnet" (importiert) und "gespeichert" (exportiert) werden können, später möglicherweise als Progressive Web App.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Roadmap
 
-## Deploy on Vercel
+- [x] Basis-Datenmodell für Jahrgänge, Klassen, Lehrer, Schulfächer und Noten
+- [x] Datenimport aus CSV-Datei
+- [x] Datenbereinigung (Entfernung Duplikate, Tippfehler)
+- [x] Datenaufbereitung (z.B. Schuljahresdurchschnitt vs. Einzelnoten)
+- [x] Darstellung der Daten in Tabellenform
+- [x] Filterung der Daten nach individueller Klasse (Lerngruppe), Schuljahr, Jahrgang, Fach und Lehrkörper
+- [ ] Auswahl Lehrerkörper nach unterrichteten Fächern
+- [ ] Visuelle Darstellung (Plotly.js)
+- [ ] Definition und Anwendung Design System
+- [ ] Speichern von Daten (Export JSON)
+- [ ] Öffnen von Daten (Import JSON)
+- [ ] Dateneingabe
+- [ ] Definition von Lehrer-Kohorten
+- [ ] Filterung nach Lehrer-Kohorten
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Verwendete Technologien
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- [React](https://react.dev/) - React Library
+- [Next.js](https://nextjs.org/) - Ein React-Framework für die Entwicklung von Webanwendungen.
+- [TypeScript](https://www.typescriptlang.org/) - Ein typisiertes Superset von JavaScript.
+- [Sass](https://sass-lang.com/) - CSS with super powers
+
+## Installation und Ausführung (Entwicklungsmodus)
+
+Um das Projekt lokal zu starten, folgen Sie diesen Schritten:
+
+1. Klonen Sie das Repository:
+
+   ```bash
+   git clone https://github.com/marielngr/edumetrics.git
+   cd edumetrics
+   ```
+
+2. Installieren Sie die Abhängigkeiten:
+
+   ```bash
+   npm install
+   ```
+
+3. Starten Sie den Entwicklungsserver:
+
+   ```bash
+   npm run dev
+   # oder
+   yarn dev
+   # oder
+   pnpm dev
+   # oder
+   bun dev
+   ```
+
+4. Öffnen Sie [http://localhost:3000](http://localhost:3000) in Ihrem Browser, um das Ergebnis zu sehen.
