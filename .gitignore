@@ -36,4 +36,5 @@ yarn-error.log*
 next-env.d.ts
 
 public/daten.csv
+public/daten.md
 TODO.txt
