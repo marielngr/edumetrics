@@ -46,18 +46,6 @@ export default function MonitoringTable() {
     );
   }
 
-  const [selectedFaecherLehrerfilter, setSelectedFaecherLehrerfilter] =
-    useState<FachId[]>([]);
-
-  //to do: die Funktion handleSelectedFaecherLehrerfilter muss noch implementiert werden
-  // check, welche Fächer ausgewählt sind und dann die dazu passenden Lehrer anzeigen
-
-  const handleSelectedFaecherLehrerfilter = (id: FachId, selected: boolean) => {
-    setSelectedFaecherLehrerfilter((prev) =>
-      selected ? [...prev, id] : prev.filter((fachId) => fachId !== id)
-    );
-  };
-
   zeilenIds = filterRowsByLehrerId(selectedLehrer, zeilenIds, data);
 
   //Filter für angezeigte rows
@@ -158,10 +146,6 @@ export default function MonitoringTable() {
           onChangeSelectedLehrer={handleChangeSelectedLehrer}
           selectedLehrer={selectedLehrer}
           faecher={data.faecher}
-          selectedFaecherLehrerfilter={selectedFaecherLehrerfilter}
-          onChangeSelectedFaecherLehrerfilter={
-            handleSelectedFaecherLehrerfilter
-          }
         />
         <section className={styles.tablesheet}>
           <div className={styles.tablesheet__wrapper}>

@@ -3,14 +3,13 @@ import DropDownMenu, {
   DropDownMenuEintrag,
 } from "../DropDownMenu/DropDownMenu";
 import { Fach, FachId, Lehrer, LehrerId } from "@/model";
+import { useState } from "react";
 
 export type SidebarLeftProps = {
   lehrer: Lehrer[];
   onChangeSelectedLehrer: (id: LehrerId) => void;
   selectedLehrer: LehrerId[];
   faecher: Fach[];
-  selectedFaecherLehrerfilter: FachId[];
-  onChangeSelectedFaecherLehrerfilter?: (id: FachId, selected: boolean) => void;
 };
 
 export default function SidebarLeft({
@@ -18,30 +17,40 @@ export default function SidebarLeft({
   onChangeSelectedLehrer,
   selectedLehrer,
   faecher,
-  selectedFaecherLehrerfilter,
-  onChangeSelectedFaecherLehrerfilter,
 }: SidebarLeftProps) {
-  // angezeigte Lehrer alphabetisch sortieren
-  const lehrerSortiert = lehrer.sort((a, b) =>
+  const [selectedFaecher, setSelectedFaecher] = useState<FachId[]>([]);
+
+  const gefilterteLehrer =
+    selectedFaecher.length === 0
+      ? lehrer
+      : lehrer.filter((l) =>
+          // Mind. ein Fach des Lehrers (some) ist in selectedFaecher enthalten
+          l.faecherIds.some((f) => selectedFaecher.includes(f))
+        );
+
+  const faechereintraege: DropDownMenuEintrag[] = faecher.map((fach) => ({
+    id: fach.id,
+    label: fach.id,
+    selected: selectedFaecher.includes(fach.id),
+  }));
+
+  function handleSelectedFach(id: FachId, selected: boolean) {
+    console.log("selectedFaecher", selectedFaecher, id, selected);
+    setSelectedFaecher(
+      selected
+        ? [...selectedFaecher, id]
+        : selectedFaecher.filter((fachId) => fachId !== id)
+    );
+  }
+
+  //  Lehrerkürzel alphabetisch sortieren
+  const lehrerSortiert = gefilterteLehrer.sort((a, b) =>
     a.kuerzel.localeCompare(b.kuerzel, "de", { sensitivity: "base" })
   );
 
   function handleLehrerClick(id: LehrerId) {
     onChangeSelectedLehrer(id);
   }
-
-  const faechereintraege: DropDownMenuEintrag[] = faecher.map((fach) => ({
-    id: fach.id,
-    label: fach.id,
-    selected: selectedFaecherLehrerfilter.includes(fach.id),
-  }));
-
-  function handleSelectedFaecherLehrerfilter(id: FachId, selected: boolean) {
-    if (onChangeSelectedFaecherLehrerfilter) {
-      onChangeSelectedFaecherLehrerfilter(id, selected);
-    }
-  }
-
   return (
     <section className={styles.sidebarLeft}>
       <label
@@ -60,7 +69,7 @@ export default function SidebarLeft({
         <p className={styles.sidebarLeft__filterContainerText}>Fachfilter</p>
         <DropDownMenu
           eintraege={faechereintraege}
-          onSelectedChange={handleSelectedFaecherLehrerfilter}
+          onSelectedChange={handleSelectedFach}
         ></DropDownMenu>
       </div>
 
