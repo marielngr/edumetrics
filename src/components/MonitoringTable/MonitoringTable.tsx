@@ -164,7 +164,6 @@ export default function MonitoringTable() {
           }
         />
         <section className={styles.tablesheet}>
-          <h2 className={styles.tablesheet__headline}>Überschrift whatever</h2>
           <div className={styles.tablesheet__wrapper}>
             <TableHeader
               klassen={sortierteKlassen}
